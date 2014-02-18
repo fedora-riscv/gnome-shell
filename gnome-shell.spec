@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.10.3
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -18,8 +18,7 @@ Patch11: track-skip-taskbar-changes.patch
 Patch12: 0001-window-tracker-Be-more-cautious-when-setting-focus-a.patch
 Patch13: 0001-shell-app-Don-t-crash-when-trying-to-dispose.patch
 Patch14: 0001-st-Add-high-dpi-support.patch
-Patch15: 0001-layout-Set-high-dpi-scaling-factor.patch
-Patch16: hidpi-vnc-fix.patch
+Patch15: 0002-shell-global-Set-high-dpi-scaling-factor.patch
 
 %define clutter_version 1.13.4
 %define gnome_bluetooth_version 1:3.9.0
@@ -130,7 +129,6 @@ easy to use experience.
 %patch13 -p1 -b .fix-app-dispose-crash
 %patch14 -p1 -b .hdpi-st
 %patch15 -p1 -b .hdpi-layout
-%patch16 -p1 -b .hdpi-vnc
 
 %build
 (if ! test -x configure; then NOCONFIGURE=1 ./autogen.sh; fi;
@@ -190,6 +188,10 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Tue Feb 18 2014 Adel Gadllah <adel.gadllah@gmail.com> - 3.10.4-8
+- Don't duplicate gsd code and just use the xsetting it
+  exports
+
 * Mon Feb 17 2014 Adel Gadllah <adel.gadllah@gmail.com> - 3.10.4-7
 - Don't enable high dpi scaling for vnc / xrdp
 - Fixes RH #1065563 

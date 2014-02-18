@@ -44,8 +44,8 @@ index cc82566..b2b6e52 100644
 +   * a race condition. GdkScreen's monitors-changed signal is
 +   * emitted *after* the xsetting has been updated.
 +   */
-+  g_signal_connect (global->gdk_screen, "monitors-changed",
-+                    G_CALLBACK (update_scale_factor), global);
++  g_signal_connect_swapped (global->gdk_screen, "monitors-changed",
++                            G_CALLBACK (update_scale_factor), global);
 +
    gdk_event_handler_set (gnome_shell_gdk_event_handler, global, NULL);
  
