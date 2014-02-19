@@ -188,21 +188,21 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
-* Tue Feb 18 2014 Adel Gadllah <adel.gadllah@gmail.com> - 3.10.4-8
+* Tue Feb 18 2014 Adel Gadllah <adel.gadllah@gmail.com> - 3.10.3-8
 - Don't duplicate gsd code and just use the xsetting it
   exports
 
-* Mon Feb 17 2014 Adel Gadllah <adel.gadllah@gmail.com> - 3.10.4-7
+* Mon Feb 17 2014 Adel Gadllah <adel.gadllah@gmail.com> - 3.10.3-7
 - Don't enable high dpi scaling for vnc / xrdp
 - Fixes RH #1065563 
 
-* Wed Feb 12 2014 Adel Gadllah <adel.gadllah@gmail.com> - 3.10.4-6
+* Wed Feb 12 2014 Adel Gadllah <adel.gadllah@gmail.com> - 3.10.3-6
 - Replace patch with one that does not hang gdm
 
-* Wed Feb 12 2014 Adel Gadllah <adel.gadllah@gmail.com> - 3.10.4-5
+* Wed Feb 12 2014 Adel Gadllah <adel.gadllah@gmail.com> - 3.10.3-5
 - Backport high dpi support patches from upstream
 
-* Thu Feb 06 2014 Florian Müllner <fmuellner@redhat.com> - 3.10.4-4
+* Thu Feb 06 2014 Florian Müllner <fmuellner@redhat.com> - 3.10.3-4
 - Backport fix for crash when using some Java applications (#1058314)
 
 * Fri Jan 31 2014 Florian Müllner <fmuellner@redhat.com> - 3.10.3-3
