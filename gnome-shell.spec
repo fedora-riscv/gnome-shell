@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.10.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -13,6 +13,7 @@ Source0:        http://download.gnome.org/sources/gnome-shell/3.10/%{name}-%{ver
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
 Patch2: only-set-scale-factor-on-success.patch
+Patch3: fix-broken-crosshairs.patch
 
 %define clutter_version 1.13.4
 %define gnome_bluetooth_version 1:3.9.0
@@ -117,6 +118,7 @@ easy to use experience.
 %setup -q
 %patch1 -p1 -b .firefox
 %patch2 -p1 -b .scale-factor-success
+%patch3 -p1 -b .broken-crosshairs
 
 %build
 (if ! test -x configure; then NOCONFIGURE=1 ./autogen.sh; fi;
@@ -176,6 +178,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Wed Apr 02 2014 Javier Hernández <jhernandez@emergya.com> - 3.10.4-3
+- Fix gnome shell magnifier's crosshairs (RH #1083500)
+
 * Mon Mar 17 2014 Adel Gadllah <adel.gadllah@gmail.com> - 3.10.4-2
 - Backport fix for RH #1076981
 
