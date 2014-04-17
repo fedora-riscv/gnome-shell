@@ -13,16 +13,16 @@ Source0:        http://download.gnome.org/sources/gnome-shell/3.12/%{name}-%{ver
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
 
-%define clutter_version 1.13.4
+%define clutter_version 1.15.90
 %define gnome_bluetooth_version 1:3.9.0
 %define gobject_introspection_version 0.10.1
-%define gjs_version 1.35.4
-%define mutter_version 3.10.1
+%define gjs_version 1.39.0
+%define mutter_version 3.12.0
 %define eds_version 3.5.3
 %define gnome_desktop_version 3.7.90
 %define gnome_menus_version 3.5.3
 %define json_glib_version 0.13.2
-%define gsettings_desktop_schemas_version 3.9.2
+%define gsettings_desktop_schemas_version 3.11.4
 %define caribou_version 0.4.8
 %define libcroco_version 0.6.8
 %define telepathy_logger_version 0.2.6
@@ -64,8 +64,7 @@ BuildRequires:  libXfixes-devel >= 5.0
 # used in unused BigThemeImage
 BuildRequires:  librsvg2-devel
 BuildRequires:  mutter-devel >= %{mutter_version}
-BuildRequires:  mutter-wayland-devel
-BuildRequires:  libwayland-server-devel
+BuildRequires:  mutter-wayland-devel >= %{mutter_version}
 BuildRequires:  pulseaudio-libs-devel
 %ifnarch s390 s390x ppc ppc64 ppc64p7
 BuildRequires:  gnome-bluetooth-libs-devel >= %{gnome_bluetooth_version}
@@ -104,6 +103,8 @@ Requires:       caribou%{?_isa} >= %{caribou_version}
 Requires:       accountsservice-libs%{?_isa}
 Requires:       gdm-libs%{?_isa}
 Requires:       clutter%{?_isa} >= %{clutter_version}
+# needed for settings items in menus
+Requires:	control-center
 
 %description
 GNOME Shell provides core user interface functions for the GNOME 3 desktop,
