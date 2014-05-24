@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.10.4
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -14,6 +14,12 @@ Source0:        http://download.gnome.org/sources/gnome-shell/3.10/%{name}-%{ver
 Patch1: gnome-shell-favourite-apps-firefox.patch
 Patch2: only-set-scale-factor-on-success.patch
 Patch3: fix-broken-crosshairs.patch
+
+# Make OSK work in modal dialogs, backport from master branch
+# https://bugzilla.gnome.org/show_bug.cgi?id=719451
+# https://bugzilla.redhat.com/show_bug.cgi?id=1071907
+Patch4: 0001-modalDialog-Remove-unused-parentActor-param.patch
+Patch5: 0002-layout-Create-a-group-for-modal-dialogs.patch
 
 %define clutter_version 1.13.4
 %define gnome_bluetooth_version 1:3.9.0
@@ -119,6 +125,8 @@ easy to use experience.
 %patch1 -p1 -b .firefox
 %patch2 -p1 -b .scale-factor-success
 %patch3 -p1 -b .broken-crosshairs
+%patch4 -p1 -b .osk_modal1
+%patch5 -p1 -b .osk_modal2
 
 %build
 (if ! test -x configure; then NOCONFIGURE=1 ./autogen.sh; fi;
@@ -178,6 +186,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Fri May 23 2014 Adam Williamson <awilliam@redhat.com> - 3.10.4-4
+- make OSK work with modal dialogs (backport, BGO #719451, RHBZ #1071907)
+
 * Wed Apr 02 2014 Javier Hernández <jhernandez@emergya.com> - 3.10.4-3
 - Fix gnome shell magnifier's crosshairs (RH #1083500)
 

@@ -1,0 +1,36 @@
+From 1b78dd662b12c9fa2951d71c456d808e160d54cf Mon Sep 17 00:00:00 2001
+From: Rui Matos <tiagomatos@gmail.com>
+Date: Tue, 18 Mar 2014 14:41:26 +0100
+Subject: [PATCH 1/2] modalDialog: Remove unused parentActor param
+
+No ModalDialog users set this so let's hardcode it.
+
+https://bugzilla.gnome.org/show_bug.cgi?id=719451
+---
+ js/ui/modalDialog.js | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/js/ui/modalDialog.js b/js/ui/modalDialog.js
+index 366e425..be16128 100644
+--- a/js/ui/modalDialog.js
++++ b/js/ui/modalDialog.js
+@@ -41,7 +41,6 @@ const ModalDialog = new Lang.Class({
+     _init: function(params) {
+         params = Params.parse(params, { shellReactive: false,
+                                         styleClass: null,
+-                                        parentActor: Main.uiGroup,
+                                         keybindingMode: Shell.KeyBindingMode.SYSTEM_MODAL,
+                                         shouldFadeIn: true,
+                                         destroyOnClose: true });
+@@ -57,7 +56,7 @@ const ModalDialog = new Lang.Class({
+                                       x: 0,
+                                       y: 0,
+                                       accessible_role: Atk.Role.DIALOG });
+-        params.parentActor.add_actor(this._group);
++        Main.uiGroup.add_actor(this._group);
+ 
+         let constraint = new Clutter.BindConstraint({ source: global.stage,
+                                                       coordinate: Clutter.BindCoordinate.ALL });
+-- 
+1.9.3
+

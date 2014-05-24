@@ -1,0 +1,44 @@
+From 2974b29f159adb4bcd0f597b91d7964d31b71151 Mon Sep 17 00:00:00 2001
+From: Rui Matos <tiagomatos@gmail.com>
+Date: Tue, 18 Mar 2014 14:44:44 +0100
+Subject: [PATCH 2/2] layout: Create a group for modal dialogs
+
+This way we can ensure that they're always stacked under the OSK.
+
+https://bugzilla.gnome.org/show_bug.cgi?id=719451
+---
+ js/ui/layout.js      | 4 ++++
+ js/ui/modalDialog.js | 2 +-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/js/ui/layout.js b/js/ui/layout.js
+index 7b3647c..dc91f02 100644
+--- a/js/ui/layout.js
++++ b/js/ui/layout.js
+@@ -212,6 +212,10 @@ const LayoutManager = new Lang.Class({
+         this.addChrome(this.trayBox);
+         this._setupTrayPressure();
+ 
++        this.modalDialogGroup = new St.Widget({ name: 'modalDialogGroup',
++                                                layout_manager: new Clutter.BinLayout() });
++        this.uiGroup.add_actor(this.modalDialogGroup);
++
+         this.keyboardBox = new St.BoxLayout({ name: 'keyboardBox',
+                                               reactive: true,
+                                               track_hover: true });
+diff --git a/js/ui/modalDialog.js b/js/ui/modalDialog.js
+index be16128..5d10613 100644
+--- a/js/ui/modalDialog.js
++++ b/js/ui/modalDialog.js
+@@ -56,7 +56,7 @@ const ModalDialog = new Lang.Class({
+                                       x: 0,
+                                       y: 0,
+                                       accessible_role: Atk.Role.DIALOG });
+-        Main.uiGroup.add_actor(this._group);
++        Main.layoutManager.modalDialogGroup.add_actor(this._group);
+ 
+         let constraint = new Clutter.BindConstraint({ source: global.stage,
+                                                       coordinate: Clutter.BindCoordinate.ALL });
+-- 
+1.9.3
+
