@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.10.4
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -17,8 +17,11 @@ Patch2: only-set-scale-factor-on-success.patch
 # Make OSK work in modal dialogs, backport from master branch
 # https://bugzilla.gnome.org/show_bug.cgi?id=719451
 # https://bugzilla.redhat.com/show_bug.cgi?id=1071907
-Patch3: 0001-modalDialog-Remove-unused-parentActor-param.patch
-Patch4: 0002-layout-Create-a-group-for-modal-dialogs.patch
+Patch4: 0001-modalDialog-Remove-unused-parentActor-param.patch
+Patch5: 0002-layout-Create-a-group-for-modal-dialogs.patch
+
+Patch6: fix-broken-crosshairs.patch
+Patch7: 0001-a11y-initialize-atspi-on-demand.patch
 
 %define clutter_version 1.13.4
 %define gnome_bluetooth_version 1:3.9.0
@@ -123,8 +126,10 @@ easy to use experience.
 %setup -q
 %patch1 -p1 -b .firefox
 %patch2 -p1 -b .scale-factor-success
-%patch3 -p1 -b .osk_modal1
-%patch4 -p1 -b .osk_modal2
+%patch4 -p1 -b .osk_modal1
+%patch5 -p1 -b .osk_modal2
+%patch6 -p1 -b .broken-crosshairs
+%patch7 -p1 -b .defer-atspi-initialization
 
 %build
 (if ! test -x configure; then NOCONFIGURE=1 ./autogen.sh; fi;
@@ -184,8 +189,12 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Fri Jun 27 2014 Florian Müllner <fmuellner@redhat.com> - 3.10.4-6
+- Add back crosshairs fix plus upstream workaround for the reported
+  performance regressions (RH #1083500)
+
 * Mon Jun 02 2014 Florian Müllner <fmuellner@redhat.com> - 3.10.4-5
-- Remove crosshars fix again - the update was redrawn due to performance
+- Remove crosshairs fix again - the update was redrawn due to performance
   regressions, 3.10.4-4 re-introduced it accidentally
 
 * Fri May 23 2014 Adam Williamson <awilliam@redhat.com> - 3.10.4-4
