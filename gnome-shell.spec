@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.10.4
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -184,6 +184,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Thu Jul 17 2014 Rex Dieter <rdieter@fedoraproject.org> - 3.10.4-7
+- rebuild (for pulseaudio, bug #1117683)
+
 * Thu Jul 10 2014 Florian Müllner <fmuellner@redhat.com> - 3.10.4-6
 - Revert last patches again - the performance regression is still present
 
