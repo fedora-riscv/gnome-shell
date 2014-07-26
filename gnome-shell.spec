@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.10.4
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -19,6 +19,8 @@ Patch2: only-set-scale-factor-on-success.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1071907
 Patch3: 0001-modalDialog-Remove-unused-parentActor-param.patch
 Patch4: 0002-layout-Create-a-group-for-modal-dialogs.patch
+
+Patch5: 0001-st-scroll-view-fade-Refuse-to-work-without-GLSL.patch
 
 %define clutter_version 1.13.4
 %define gnome_bluetooth_version 1:3.9.0
@@ -125,6 +127,7 @@ easy to use experience.
 %patch2 -p1 -b .scale-factor-success
 %patch3 -p1 -b .osk_modal1
 %patch4 -p1 -b .osk_modal2
+%patch5 -p1 -b .fix-glsl-crash
 
 %build
 (if ! test -x configure; then NOCONFIGURE=1 ./autogen.sh; fi;
@@ -184,6 +187,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Thu Jul 24 2014 Adel Gadllah <adel.gadllah@gmail.com> - 3.10.4-8
+- Fix crash when GLSL is not available (#1046970)
+
 * Thu Jul 17 2014 Rex Dieter <rdieter@fedoraproject.org> - 3.10.4-7
 - rebuild (for pulseaudio, bug #1117683)
 
