@@ -1,0 +1,69 @@
+From 8afd6305bd963d2fee9e2d3317cf7db76ddf8936 Mon Sep 17 00:00:00 2001
+From: Carlos Soriano <carlos.soriano89@gmail.com>
+Date: Tue, 5 Aug 2014 11:17:32 +0200
+Subject: [PATCH] appDisplay: Don't grow indicators more than the parent
+
+Currently the indicators are a BoxLayout inside a BinLayout in AllView.
+BinLayout doesn't have any size constraint, so if the indicators request
+a bigger size than AllView the entire overview is grown, causing the
+overview to go crazy.
+
+To avoid that, create an actor for the page indicators that request as
+minimum size 0, and as a natural size, the sum of all indicators natural
+sizes. Then we clip_to_allocation, so it doesn't grow more than the
+parent.
+
+https://bugzilla.gnome.org/show_bug.cgi?id=723496
+---
+ js/ui/appDisplay.js | 30 ++++++++++++++++++++++++------
+ 1 file changed, 24 insertions(+), 6 deletions(-)
+
+diff --git a/js/ui/appDisplay.js b/js/ui/appDisplay.js
+index 90fac87..7f152a8 100644
+--- a/js/ui/appDisplay.js
++++ b/js/ui/appDisplay.js
+@@ -178,17 +178,35 @@ const BaseAppView = new Lang.Class({
+ });
+ Signals.addSignalMethods(BaseAppView.prototype);
+ 
++const PageIndicatorsActor = new Lang.Class({
++    Name:'PageIndicatorsActor',
++    Extends: St.BoxLayout,
++
++    _init: function() {
++        this.parent({ style_class: 'page-indicators',
++                      vertical: true,
++                      x_expand: true, y_expand: true,
++                      x_align: Clutter.ActorAlign.END,
++                      y_align: Clutter.ActorAlign.CENTER,
++                      reactive: true,
++                      clip_to_allocation: true });
++    },
++
++    vfunc_get_preferred_height: function(forWidth) {
++        // We want to request the natural height of all our children as our
++        // natural height, so we chain up to St.BoxLayout, but we only request 0
++        // as minimum height, since it's not that important if some indicators
++        // are not shown
++        let [, natHeight] = this.parent(forWidth);
++        return [0, natHeight];
++    }
++});
+ 
+ const PageIndicators = new Lang.Class({
+     Name:'PageIndicators',
+ 
+     _init: function() {
+-        this.actor = new St.BoxLayout({ style_class: 'page-indicators',
+-                                        vertical: true,
+-                                        x_expand: true, y_expand: true,
+-                                        x_align: Clutter.ActorAlign.END,
+-                                        y_align: Clutter.ActorAlign.CENTER,
+-                                        reactive: true });
++        this.actor = new PageIndicatorsActor();
+         this._nPages = 0;
+         this._currentPage = undefined;
+ 
+-- 
+2.1.0
+

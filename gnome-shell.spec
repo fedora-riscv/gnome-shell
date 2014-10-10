@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.12.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -13,6 +13,7 @@ Source0:        http://download.gnome.org/sources/gnome-shell/3.12/%{name}-%{ver
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
 Patch2: 0001-a11y-initialize-atspi-on-demand.patch
+Patch3: 0001-appDisplay-Don-t-grow-indicators-more-than-the-paren.patch
 
 %define clutter_version 1.15.90
 %define gnome_bluetooth_version 1:3.9.0
@@ -118,6 +119,7 @@ easy to use experience.
 %setup -q
 %patch1 -p1 -b .firefox
 %patch2 -p1 -b .defer-atspi-init
+%patch3 -p1 -b .dont-grow-indicators
 
 %build
 (if ! test -x configure; then NOCONFIGURE=1 ./autogen.sh; fi;
@@ -177,6 +179,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Fri Oct 10 2014 Debarshi Ray <rishi@fedoraproject.org> - 3.12.2-3
+- Backport fix for clipped overview (GNOME 723496)
+
 * Fri Jun 27 2014 Florian Müllner <fmuellner@redhat.com> - 3.12.2-2
 - Backport deferred at-spi initialization to fix performance regression
 
