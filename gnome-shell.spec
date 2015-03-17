@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.14.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -103,11 +103,6 @@ Requires:       clutter%{?_isa} >= %{clutter_version}
 # needed for settings items in menus
 Requires:	    control-center
 
-%if 0%{?fedora}
-# needed for captive portal support
-Requires:       NetworkManager-config-connectivity-fedora
-%endif
-
 %description
 GNOME Shell provides core user interface functions for the GNOME 3 desktop,
 like switching to windows and launching applications. GNOME Shell takes
@@ -179,6 +174,10 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Fri Mar 27 2015 Rex Dieter <rdieter@fedoraproject.org> 3.14.4-2
+- Drop dep on NetworkManager-config-connectivity-fedora
+  It's already required by fedora-release-workstation
+
 * Mon Mar 23 2015 Florian Müllner <fmuellner@redhat.com> - 3.14.4-1
 - Update to 3.14.4
 
