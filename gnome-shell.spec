@@ -1,6 +1,6 @@
 Name:           gnome-shell
-Version:        3.18.2
-Release:        2%{?dist}
+Version:        3.18.3
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -13,8 +13,6 @@ Source0:        http://download.gnome.org/sources/gnome-shell/3.18/%{name}-%{ver
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
 Patch2: 0001-appFavorites-Add-gnome-terminal-to-the-rename-list.patch
-# Backported from upstream
-Patch3: 0001-Revert-browser-plugin-Set-windowless-mode-and-don-t-.patch
 
 %define clutter_version 1.21.5
 %define gnome_bluetooth_version 1:3.9.0
@@ -190,6 +188,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Tue Nov 17 2015 Florian Müllner <fmuellner@redhat.com> - 3.18.3-1
+- Update to 3.18.3
+
 * Mon Nov 16 2015 Kalev Lember <klember@redhat.com> - 3.18.2-2
 - Revert a change that caused the browser plugin to crash under Firefox
   (#1282373)
