@@ -1,5 +1,5 @@
 Name:           gnome-shell
-Version:        3.18.4
+Version:        3.18.5
 Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
@@ -187,6 +187,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Thu Apr 21 2016 Florian Müllner <fmuellner@redhat.com> - 3.18.5-1
+- Update to 3.18.5
+
 * Thu Mar 03 2016 Florian Müllner <fmuellner@redhat.com> - 3.18.4-1
 - Update to 3.18.4
 
