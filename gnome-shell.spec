@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.20.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -12,6 +12,9 @@ Source0:        http://download.gnome.org/sources/gnome-shell/3.20/%{name}-%{ver
 
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
+
+# Adjust to xdg-app -> flatpak rename
+Patch2: 0001-location-Update-for-PermissionStore-DBus-API-changes.patch
 
 %define clutter_version 1.21.5
 %define gnome_bluetooth_version 1:3.9.0
@@ -183,6 +186,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Fri Jul 08 2016 Florian Müllner <fmuellner@redhat.com> - 3.20-3-2
+- Adjust to xdg-app -> flatpak rename
+
 * Wed Jun 29 2016 Florian Müllner <fmuellner@redhat.com> - 3.20.3-1
 - Update to 3.20.3
 
