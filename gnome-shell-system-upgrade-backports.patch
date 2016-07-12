@@ -1,0 +1,287 @@
+From db8f6b4848760328bebaca6ecceec1c7477c42b8 Mon Sep 17 00:00:00 2001
+From: Kalev Lember <klember@redhat.com>
+Date: Mon, 14 Mar 2016 23:52:14 +0100
+Subject: [PATCH 1/3] endSessionDialog: Rename a variable
+
+https://bugzilla.gnome.org/show_bug.cgi?id=763611
+---
+ js/ui/endSessionDialog.js | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/js/ui/endSessionDialog.js b/js/ui/endSessionDialog.js
+index 966bae2..93a9276 100644
+--- a/js/ui/endSessionDialog.js
++++ b/js/ui/endSessionDialog.js
+@@ -114,7 +114,7 @@ const restartDialogContent = {
+     showOtherSessions: true,
+ };
+ 
+-const restartInstallDialogContent = {
++const restartUpdateDialogContent = {
+ 
+     subject: C_("title", "Restart & Install Updates"),
+     description: function(seconds) {
+@@ -143,7 +143,7 @@ const DialogContent = {
+     0 /* DialogType.LOGOUT */: logoutDialogContent,
+     1 /* DialogType.SHUTDOWN */: shutdownDialogContent,
+     2 /* DialogType.RESTART */: restartDialogContent,
+-    3 /* DialogType.UPDATE_RESTART */: restartInstallDialogContent
++    3 /* DialogType.UPDATE_RESTART */: restartUpdateDialogContent
+ };
+ 
+ const MAX_USERS_IN_SESSION_DIALOG = 5;
+-- 
+2.5.5
+
+
+From 58a733dc93a0545d58e1d3e6d920d506bbefe2c6 Mon Sep 17 00:00:00 2001
+From: Kalev Lember <klember@redhat.com>
+Date: Mon, 14 Mar 2016 23:55:03 +0100
+Subject: [PATCH 2/3] endSessionDialog: Use new PackageKit DBus API
+
+https://bugzilla.gnome.org/show_bug.cgi?id=763611
+---
+ js/ui/endSessionDialog.js | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/js/ui/endSessionDialog.js b/js/ui/endSessionDialog.js
+index 93a9276..4467a54 100644
+--- a/js/ui/endSessionDialog.js
++++ b/js/ui/endSessionDialog.js
+@@ -163,7 +163,7 @@ const LogindSession = Gio.DBusProxy.makeProxyWrapper(LogindSessionIface);
+ const PkOfflineIface = '<node> \
+ <interface name="org.freedesktop.PackageKit.Offline"> \
+     <property name="UpdatePrepared" type="b" access="read"/> \
+-    <property name="TriggerAction" type="s" access="read"/> \
++    <property name="UpdateTriggered" type="b" access="read"/> \
+     <method name="Trigger"> \
+         <arg type="s" name="action" direction="in"/> \
+     </method> \
+@@ -699,7 +699,7 @@ const EndSessionDialog = new Lang.Class({
+         this._type = type;
+ 
+         if (this._type == DialogType.RESTART &&
+-            this._pkOfflineProxy.TriggerAction == 'reboot')
++            this._pkOfflineProxy.UpdateTriggered)
+             this._type = DialogType.UPDATE_RESTART;
+ 
+         this._applications = [];
+@@ -727,19 +727,19 @@ const EndSessionDialog = new Lang.Class({
+         if (dialogContent.showOtherSessions)
+             this._loadSessions();
+ 
+-        let updateAlreadyTriggered = this._pkOfflineProxy.TriggerAction == 'power-off' || this._pkOfflineProxy.TriggerAction == 'reboot';
++        let updateTriggered = this._pkOfflineProxy.UpdateTriggered;
+         let updatePrepared = this._pkOfflineProxy.UpdatePrepared;
+         let updatesAllowed = this._updatesPermission && this._updatesPermission.allowed;
+ 
+         _setCheckBoxLabel(this._checkBox, dialogContent.checkBoxText);
+         this._checkBox.actor.visible = (dialogContent.checkBoxText && updatePrepared && updatesAllowed);
+-        this._checkBox.actor.checked = (updatePrepared && updateAlreadyTriggered);
++        this._checkBox.actor.checked = (updatePrepared && updateTriggered);
+ 
+         // We show the warning either together with the checkbox, or when
+         // updates have already been triggered, but the user doesn't have
+         // enough permissions to cancel them.
+         this._batteryWarning.visible = (dialogContent.showBatteryWarning &&
+-                                        (this._checkBox.actor.visible || updatePrepared && updateAlreadyTriggered && !updatesAllowed));
++                                        (this._checkBox.actor.visible || updatePrepared && updateTriggered && !updatesAllowed));
+ 
+         this._updateButtons();
+ 
+-- 
+2.5.5
+
+
+From ab68360d5351bc72143a8093950586136e4cb5e3 Mon Sep 17 00:00:00 2001
+From: Kalev Lember <klember@redhat.com>
+Date: Tue, 15 Mar 2016 18:46:40 +0100
+Subject: [PATCH 3/3] endSessionDialog: Add support for system upgrades
+
+https://bugzilla.gnome.org/show_bug.cgi?id=763611
+---
+ js/ui/endSessionDialog.js | 54 +++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 45 insertions(+), 9 deletions(-)
+
+diff --git a/js/ui/endSessionDialog.js b/js/ui/endSessionDialog.js
+index 4467a54..2ec8e04 100644
+--- a/js/ui/endSessionDialog.js
++++ b/js/ui/endSessionDialog.js
+@@ -1,6 +1,6 @@
+ // -*- mode: js; js-indent-level: 4; indent-tabs-mode: nil -*-
+ /*
+- * Copyright 2010 Red Hat, Inc
++ * Copyright 2010-2016 Red Hat, Inc
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -132,18 +132,38 @@ const restartUpdateDialogContent = {
+     showOtherSessions: true,
+ };
+ 
++const restartUpgradeDialogContent = {
++
++    subject: C_("title", "Restart & Install Upgrade"),
++    upgradeDescription: function(distroName, distroVersion) {
++        /* Translators: This is the text displayed for system upgrades in the
++           shut down dialog. First %s gets replaced with the distro name and
++           second %s with the distro version to upgrade to */
++        return _("%s %s will be installed after restart. Upgrade installation can take a long time: ensure that you have backed up and that the computer is plugged in.").format(distroName, distroVersion);
++    },
++    disableTimer: true,
++    showBatteryWarning: false,
++    confirmButtons: [{ signal: 'ConfirmedReboot',
++                       label:  C_("button", "Restart &amp; Install") }],
++    iconName: 'view-refresh-symbolic',
++    iconStyleClass: 'end-session-dialog-shutdown-icon',
++    showOtherSessions: true,
++};
++
+ const DialogType = {
+   LOGOUT: 0 /* GSM_SHELL_END_SESSION_DIALOG_TYPE_LOGOUT */,
+   SHUTDOWN: 1 /* GSM_SHELL_END_SESSION_DIALOG_TYPE_SHUTDOWN */,
+   RESTART: 2 /* GSM_SHELL_END_SESSION_DIALOG_TYPE_RESTART */,
+-  UPDATE_RESTART: 3
++  UPDATE_RESTART: 3,
++  UPGRADE_RESTART: 4
+ };
+ 
+ const DialogContent = {
+     0 /* DialogType.LOGOUT */: logoutDialogContent,
+     1 /* DialogType.SHUTDOWN */: shutdownDialogContent,
+     2 /* DialogType.RESTART */: restartDialogContent,
+-    3 /* DialogType.UPDATE_RESTART */: restartUpdateDialogContent
++    3 /* DialogType.UPDATE_RESTART */: restartUpdateDialogContent,
++    4 /* DialogType.UPGRADE_RESTART */: restartUpgradeDialogContent
+ };
+ 
+ const MAX_USERS_IN_SESSION_DIALOG = 5;
+@@ -164,6 +184,9 @@ const PkOfflineIface = '<node> \
+ <interface name="org.freedesktop.PackageKit.Offline"> \
+     <property name="UpdatePrepared" type="b" access="read"/> \
+     <property name="UpdateTriggered" type="b" access="read"/> \
++    <property name="UpgradePrepared" type="b" access="read"/> \
++    <property name="UpgradeTriggered" type="b" access="read"/> \
++    <property name="PreparedUpgrade" type="a{sv}" access="read"/> \
+     <method name="Trigger"> \
+         <arg type="s" name="action" direction="in"/> \
+     </method> \
+@@ -415,11 +438,19 @@ const EndSessionDialog = new Lang.Class({
+ 
+                 if (dialogContent.descriptionWithUser)
+                     description = dialogContent.descriptionWithUser(realName, displayTime);
+-                else
+-                    description = dialogContent.description(displayTime);
+             }
+         }
+ 
++        // Use a different description when we are installing a system upgrade
++        if (dialogContent.upgradeDescription) {
++            let name = this._pkOfflineProxy.PreparedUpgrade['name'].deep_unpack();
++            let version = this._pkOfflineProxy.PreparedUpgrade['version'].deep_unpack();
++
++            if (name != null && version != null)
++                description = dialogContent.upgradeDescription(name, version);
++        }
++
++        // Fall back to regular description
+         if (!description)
+             description = dialogContent.description(displayTime);
+ 
+@@ -698,9 +729,12 @@ const EndSessionDialog = new Lang.Class({
+         this._totalSecondsToStayOpen = totalSecondsToStayOpen;
+         this._type = type;
+ 
+-        if (this._type == DialogType.RESTART &&
+-            this._pkOfflineProxy.UpdateTriggered)
+-            this._type = DialogType.UPDATE_RESTART;
++        if (this._type == DialogType.RESTART) {
++            if (this._pkOfflineProxy.UpdateTriggered)
++                this._type = DialogType.UPDATE_RESTART;
++            else if (this._pkOfflineProxy.UpgradeTriggered)
++                this._type = DialogType.UPGRADE_RESTART;
++        }
+ 
+         this._applications = [];
+         this._applicationList.destroy_all_children();
+@@ -749,7 +783,9 @@ const EndSessionDialog = new Lang.Class({
+             return;
+         }
+ 
+-        this._startTimer();
++        if (!dialogContent.disableTimer)
++            this._startTimer();
++
+         this._sync();
+ 
+         let signalId = this.connect('opened',
+-- 
+2.5.5
+
+From 03c96159aad5d61c92c07fca0ee52656d0b5defb Mon Sep 17 00:00:00 2001
+From: Kalev Lember <klember@redhat.com>
+Date: Tue, 12 Jul 2016 20:06:10 +0200
+Subject: [PATCH] Update translations for system upgrade backports
+
+---
+ po/es.po | 20 ++++++++++++++++++++
+ po/sk.po | 18 ++++++++++++++++++
+ 2 files changed, 38 insertions(+)
+
+diff --git a/po/es.po b/po/es.po
+index 4d1710b..5f2005d 100644
+--- a/po/es.po
++++ b/po/es.po
+@@ -2947,3 +2947,23 @@ msgstr "El usuario rechazó el diálogo de autenticación"
+ 
+ #~ msgid "The user manager object this user is controlled by."
+ #~ msgstr "El objeto de gestión de usuarios que controla a este usuario."
++
++#: ../js/ui/endSessionDialog.js:137
++#| msgctxt "title"
++#| msgid "Restart & Install Updates"
++msgctxt "title"
++msgid "Restart & Install Upgrade"
++msgstr "Reiniciar e instalar actualizaciones"
++
++#. Translators: This is the text displayed for system upgrades in the
++#. shut down dialog. First %s gets replaced with the distro name and
++#. second %s with the distro version to upgrade to
++#: ../js/ui/endSessionDialog.js:142
++#, javascript-format
++msgid ""
++"%s %s will be installed after restart. Upgrade installation can take a long "
++"time: ensure that you have backed up and that the computer is plugged in."
++msgstr ""
++"%s %s se instalará después de reiniciar. La instalación de la actualización "
++"puede tardar mucho tiempo: asegúrese de que tiene una copia de respaldo y de "
++"que el equipo está enchufado."
+diff --git a/po/sk.po b/po/sk.po
+index bd15f28..ec73562 100644
+--- a/po/sk.po
++++ b/po/sk.po
+@@ -2090,3 +2090,21 @@ msgstr "Dialógové okno overenia totožnosti bolo zatvorené používateľom"
+ 
+ #~ msgid "Select an extension to configure using the combobox above."
+ #~ msgstr "Použitím ponuky vyberte rozšírenie na nastavenie"
++
++#: ../js/ui/endSessionDialog.js:137
++msgctxt "title"
++msgid "Restart & Install Upgrade"
++msgstr "Reštart a inštalácia inovácie"
++
++#. Translators: This is the text displayed for system upgrades in the
++#. shut down dialog. First %s gets replaced with the distro name and
++#. second %s with the distro version to upgrade to
++#: ../js/ui/endSessionDialog.js:142
++#, javascript-format
++msgid ""
++"%s %s will be installed after restart. Upgrade installation can take a long "
++"time: ensure that you have backed up and that the computer is plugged in."
++msgstr ""
++"Operačný systém %s %s bude nainštalovaný po reštarte. Inštalácia inovácie "
++"môže trvať dlhšiu dobu: uistite sa, že máte vytvorenú zálohu, a že počítač "
++"je pripojený k zdroju napájania."
+-- 
+2.5.5
+

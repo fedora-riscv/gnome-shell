@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.20.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -15,6 +15,9 @@ Patch1: gnome-shell-favourite-apps-firefox.patch
 
 # Adjust to xdg-app -> flatpak rename
 Patch2: 0001-location-Update-for-PermissionStore-DBus-API-changes.patch
+
+# Backports for gnome-software system upgrade support
+Patch3: gnome-shell-system-upgrade-backports.patch
 
 %define clutter_version 1.21.5
 %define gnome_bluetooth_version 1:3.9.0
@@ -111,6 +114,9 @@ Requires:       control-center
 # needed by some utilities
 Requires:       python3%{_isa}
 
+# If installed, PackageKit needs to be at least version 1.1.2
+Conflicts:      PackageKit < 1.1.2
+
 %description
 GNOME Shell provides core user interface functions for the GNOME 3 desktop,
 like switching to windows and launching applications. GNOME Shell takes
@@ -122,6 +128,7 @@ easy to use experience.
 %setup -q
 %patch1 -p1 -b .firefox
 %patch2 -p1 -b .flatpak
+%patch3 -p1 -b .system-upgrade
 
 %build
 (if ! test -x configure; then NOCONFIGURE=1 ./autogen.sh; fi;
@@ -187,6 +194,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Tue Jul 12 2016 Kalev Lember <klember@redhat.com> - 3.20.3-3
+- Backport patches for gnome-software system upgrade support
+
 * Fri Jul 08 2016 Florian Müllner <fmuellner@redhat.com> - 3.20.3-2
 - Adjust to xdg-app -> flatpak rename
 
