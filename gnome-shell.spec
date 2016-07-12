@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.18.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -13,6 +13,8 @@ Source0:        http://download.gnome.org/sources/gnome-shell/3.18/%{name}-%{ver
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
 Patch2: 0001-appFavorites-Add-gnome-terminal-to-the-rename-list.patch
+# Backports for gnome-software system upgrade support
+Patch3: gnome-shell-system-upgrade-backports.patch
 
 %define clutter_version 1.21.5
 %define gnome_bluetooth_version 1:3.9.0
@@ -109,6 +111,9 @@ Requires:       control-center
 # needed by some utilities
 Requires:       python3%{_isa}
 
+# If installed, PackageKit needs to be at least version 1.1.2
+Conflicts:      PackageKit < 1.1.2
+
 %description
 GNOME Shell provides core user interface functions for the GNOME 3 desktop,
 like switching to windows and launching applications. GNOME Shell takes
@@ -120,6 +125,7 @@ easy to use experience.
 %setup -q
 %patch1 -p1 -b .firefox
 %patch2 -p1 -b .terminal-renamed-desktop-file
+%patch3 -p1 -b .system-upgrade
 
 %build
 (if ! test -x configure; then NOCONFIGURE=1 ./autogen.sh; fi;
@@ -187,6 +193,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Tue Jul 12 2016 Kalev Lember <klember@redhat.com> - 3.18.5-2
+- Backport patches for gnome-software system upgrade support
+
 * Thu Apr 21 2016 Florian Müllner <fmuellner@redhat.com> - 3.18.5-1
 - Update to 3.18.5
 
