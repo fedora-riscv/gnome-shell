@@ -121,6 +121,7 @@ easy to use experience.
 %prep
 %setup -q
 %patch1 -p1 -b .firefox
+%patch2 -p1 -b .flatpak
 
 %build
 (if ! test -x configure; then NOCONFIGURE=1 ./autogen.sh; fi;
@@ -186,7 +187,7 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
-* Fri Jul 08 2016 Florian Müllner <fmuellner@redhat.com> - 3.20-3-2
+* Fri Jul 08 2016 Florian Müllner <fmuellner@redhat.com> - 3.20.3-2
 - Adjust to xdg-app -> flatpak rename
 
 * Wed Jun 29 2016 Florian Müllner <fmuellner@redhat.com> - 3.20.3-1
