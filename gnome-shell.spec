@@ -1,6 +1,6 @@
 Name:           gnome-shell
-Version:        3.20.3
-Release:        3%{?dist}
+Version:        3.20.4
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -12,9 +12,6 @@ Source0:        http://download.gnome.org/sources/gnome-shell/3.20/%{name}-%{ver
 
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
-
-# Adjust to xdg-app -> flatpak rename
-Patch2: 0001-location-Update-for-PermissionStore-DBus-API-changes.patch
 
 # Backports for gnome-software system upgrade support
 Patch3: gnome-shell-system-upgrade-backports.patch
@@ -127,7 +124,6 @@ easy to use experience.
 %prep
 %setup -q
 %patch1 -p1 -b .firefox
-%patch2 -p1 -b .flatpak
 %patch3 -p1 -b .system-upgrade
 
 %build
@@ -194,6 +190,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Fri Aug 19 2016 Florian Müllner <fmuellner@redhat.com> - 3.20.4-1
+- Update to 3.20.4
+
 * Tue Jul 12 2016 Kalev Lember <klember@redhat.com> - 3.20.3-3
 - Backport patches for gnome-software system upgrade support
 
