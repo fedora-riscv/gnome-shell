@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.20.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -15,6 +15,11 @@ Patch1: gnome-shell-favourite-apps-firefox.patch
 
 # Backports for gnome-software system upgrade support
 Patch3: gnome-shell-system-upgrade-backports.patch
+
+# Backports from upstream gnome-3-20 branch.
+Patch4: gnome-shell-browser-plugin-crashes.patch
+Patch5: gnome-shell-broken-login-dialog.patch
+Patch6: gnome-shell-missing-return-value.patch
 
 %define clutter_version 1.21.5
 %define gnome_bluetooth_version 1:3.9.0
@@ -125,6 +130,9 @@ easy to use experience.
 %setup -q
 %patch1 -p1 -b .firefox
 %patch3 -p1 -b .system-upgrade
+%patch4 -p1 -b .browser-plugin
+%patch5 -p1 -b .login-dialog
+%patch6 -p1 -b .return-value
 
 %build
 (if ! test -x configure; then NOCONFIGURE=1 ./autogen.sh; fi;
@@ -190,6 +198,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Sat Oct 29 2016 Michael Catanzaro <mcatanzaro@gnome.org> - 3.20.4-2
+- Backport some upstream patches
+
 * Fri Aug 19 2016 Florian Müllner <fmuellner@redhat.com> - 3.20.4-1
 - Update to 3.20.4
 

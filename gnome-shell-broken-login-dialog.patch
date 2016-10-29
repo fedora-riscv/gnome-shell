@@ -1,0 +1,43 @@
+From 15e727e1745ad1c309eb1dafc20b1c0d1b249ba1 Mon Sep 17 00:00:00 2001
+From: Michael Catanzaro <mcatanzaro@gnome.org>
+Date: Sat, 10 Sep 2016 12:55:20 -0500
+Subject: loginDialog: fix cancel button in ask for username mode
+
+If the user clicks Not Listed? to enter ask for username mode, clicks
+cancel, and then attempts to log in via the user list, the user will see
+"Authentication failed" after correctly typing the password, and then
+will become stuck in an empty screen with just the gray noise background.
+
+The problem is, we forgot to disconnect from the signal that's waiting
+for the next button to be pressed on the username entry screen. Since
+the signal handler that executes here is expecting the username to be
+input, and isn't prepared for us to have switched back to user list,
+various bad things happen. We try to start two gdm-password
+conversations at once, for instance, one using the user's password as
+the username. I stopped investigating here, because it's easy to fix by
+disconnecting from the signal at the right time.
+
+https://bugzilla.gnome.org/show_bug.cgi?id=770328
+---
+ js/gdm/loginDialog.js | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/js/gdm/loginDialog.js b/js/gdm/loginDialog.js
+index 46eeb83..d88e50f 100644
+--- a/js/gdm/loginDialog.js
++++ b/js/gdm/loginDialog.js
+@@ -804,6 +804,11 @@ const LoginDialog = new Lang.Class({
+ 
+         this._user = null;
+ 
++        if (this._nextSignalId) {
++            this._authPrompt.disconnect(this._nextSignalId);
++            this._nextSignalId = 0;
++        }
++
+         if (beginRequest == AuthPrompt.BeginRequestType.PROVIDE_USERNAME) {
+             if (!this._disableUserList)
+                 this._showUserList();
+-- 
+cgit v0.12
+

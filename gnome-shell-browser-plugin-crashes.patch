@@ -1,0 +1,36 @@
+From d5c0514e21d130c88e2fa032421e486c0b0efa75 Mon Sep 17 00:00:00 2001
+From: Carlos Garcia Campos <cgarcia@igalia.com>
+Date: Fri, 28 Oct 2016 15:33:11 +0200
+Subject: browser-plugin: The NPObject returned by NPP_GetValue should be
+ retained
+
+The Mozilla documentation says: "And as always when working with
+reference counted NPObjects, the caller is responsible for calling
+NPN_ReleaseObject on the NPObject to drop the reference."
+
+Browsers assume that the plugin does the right thing and always call
+NPN_ReleaseObject. At some point the object is released and deallocated
+and both the plugin and browser still have references to the object
+thinking that it's still alive. That's why the crash is sometimes in the
+plugin when it tries to use the np object, and sometimes in the browser.
+
+https://bugzilla.gnome.org/post_bug.cgi
+---
+ browser-plugin/browser-plugin.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/browser-plugin/browser-plugin.c b/browser-plugin/browser-plugin.c
+index 4555a96..35e1596 100644
+--- a/browser-plugin/browser-plugin.c
++++ b/browser-plugin/browser-plugin.c
+@@ -1029,6 +1029,7 @@ NPP_GetValue(NPP          instance,
+     if (!instance->pdata)
+       return NPERR_INVALID_INSTANCE_ERROR;
+ 
++    funcs.retainobject (instance->pdata);
+     *(NPObject**)value = instance->pdata;
+     break;
+ 
+-- 
+cgit v0.12
+
