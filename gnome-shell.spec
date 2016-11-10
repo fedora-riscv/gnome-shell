@@ -1,6 +1,6 @@
 Name:           gnome-shell
-Version:        3.22.1
-Release:        2%{?dist}
+Version:        3.22.2
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -191,6 +191,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Thu Nov 10 2016 Florian Müllner <fmuellner@redhat.com> - 3.22.2-1
+- Update to 3.22.2
+
 * Fri Oct 21 2016 Bastien Nocera <bnocera@redhat.com> - 3.22.1-2
 - Add patches to allow launching on discrete GPU when available
 
