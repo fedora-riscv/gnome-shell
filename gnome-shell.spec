@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.20.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -20,6 +20,7 @@ Patch3: gnome-shell-system-upgrade-backports.patch
 Patch4: gnome-shell-browser-plugin-crashes.patch
 Patch5: gnome-shell-broken-login-dialog.patch
 Patch6: gnome-shell-missing-return-value.patch
+Patch7: gnome-shell-portal-helper-tls-failure.patch
 
 %define clutter_version 1.21.5
 %define gnome_bluetooth_version 1:3.9.0
@@ -133,6 +134,7 @@ easy to use experience.
 %patch4 -p1 -b .browser-plugin
 %patch5 -p1 -b .login-dialog
 %patch6 -p1 -b .return-value
+%patch7 -p1 -b .portal-helper
 
 %build
 (if ! test -x configure; then NOCONFIGURE=1 ./autogen.sh; fi;
@@ -198,6 +200,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Wed Nov 23 2016 Debarshi Ray <rishi@fedoraproject.org> - 3.20.4-3
+- Address intermittent TLS failures in the portal helper (RH #1362449)
+
 * Sat Oct 29 2016 Michael Catanzaro <mcatanzaro@gnome.org> - 3.20.4-2
 - Backport some upstream patches
 
