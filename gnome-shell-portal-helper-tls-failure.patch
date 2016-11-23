@@ -1,0 +1,50 @@
+From 25f3ce8c1484677f5fdc7b2399c451a091d839ec Mon Sep 17 00:00:00 2001
+From: Debarshi Ray <debarshir@gnome.org>
+Date: Mon, 24 Oct 2016 15:20:26 +0200
+Subject: [PATCH] portalHelper: Address intermittent TLS failures
+
+Users are currently experiencing intermittent (and hard to debug) TLS
+errors when loading the portal authentication page. This could be
+caused by using http://www.gnome.org/ for our connectivity checks
+because it redirects to HTTPS.
+
+We can completely remove TLS from the equation by not using HTTPS.
+http://nmcheck.gnome.org/ is a good choice because it doesn't redirect
+to HTTPS and was created for NetworkManager's connectivity check.
+
+https://bugzilla.gnome.org/show_bug.cgi?id=769940
+---
+ js/portalHelper/main.js | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/js/portalHelper/main.js b/js/portalHelper/main.js
+index b15dfcfd6b37..75daf6670fde 100644
+--- a/js/portalHelper/main.js
++++ b/js/portalHelper/main.js
+@@ -50,7 +50,7 @@ const PortalWindow = new Lang.Class({
+         this.parent({ application: application });
+ 
+         if (!url) {
+-            url = 'http://www.gnome.org';
++            url = 'http://nmcheck.gnome.org';
+             this._originalUrlWasGnome = true;
+         } else {
+             this._originalUrlWasGnome = false;
+@@ -112,12 +112,12 @@ const PortalWindow = new Lang.Class({
+         let uri = new Soup.URI(request.get_uri());
+ 
+         if (!uri.host_equal(this._uri) && this._originalUrlWasGnome) {
+-            if (uri.get_host() == 'www.gnome.org' && this._everSeenRedirect) {
++            if (uri.get_host() == 'nmcheck.gnome.org' && this._everSeenRedirect) {
+                 // Yay, we got to gnome!
+                 decision.ignore();
+                 this._doneCallback(PortalHelperResult.COMPLETED);
+                 return true;
+-            } else if (uri.get_host() != 'www.gnome.org') {
++            } else if (uri.get_host() != 'nmcheck.gnome.org') {
+                 this._everSeenRedirect = true;
+             }
+         }
+-- 
+2.7.4
+
