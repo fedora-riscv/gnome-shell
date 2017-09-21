@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.22.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -16,6 +16,7 @@ Patch1: gnome-shell-favourite-apps-firefox.patch
 # https://bugzilla.gnome.org/show_bug.cgi?id=773117 without the internal API break
 Patch2: 0001-f25-shell-app-Add-shell_app_launch_context-helper-AP.patch
 Patch3: 0002-f25-appDisplay-Add-a-menu-item-to-launch-on-the-disc.patch
+Patch4: 0001-gtk-embed-ensure-we-only-listen-for-window-created-e.patch
 
 %define gnome_bluetooth_version 1:3.9.0
 %define gobject_introspection_version 1.45.4
@@ -122,6 +123,7 @@ easy to use experience.
 %patch1 -p1 -b .firefox
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 (if ! test -x configure; then NOCONFIGURE=1 ./autogen.sh; fi;
@@ -191,6 +193,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %exclude %{_datadir}/gtk-doc
 
 %changelog
+* Thu Sep 21 2017 Florian Müllner <fmuellner@redhat.com> - 3.22.3-2
+- Fix crash on fast status icon remapping
+
 * Thu Feb 16 2017 Florian Müllner <fmuellner@redhat.com> - 3.22.3-1
 - Update to 3.22.3
 
