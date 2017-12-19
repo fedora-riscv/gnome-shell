@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.26.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -75,6 +75,7 @@ Requires:       gnome-session-xsession
 Requires:       gobject-introspection%{?_isa} >= %{gobject_introspection_version}
 Requires:       gjs%{?_isa} >= %{gjs_version}
 Requires:       gtk3%{?_isa} >= %{gtk3_version}
+Requires:       libnm-gtk%{?_isa}
 # needed for loading SVG's via gdk-pixbuf
 Requires:       librsvg2%{?_isa}
 # needed as it is now split from Clutter
@@ -182,6 +183,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %{_mandir}/man1/%{name}.1.gz
 
 %changelog
+* Tue Dec 19 2017 Kalev Lember <klember@redhat.com> - 3.26.2-3
+- Explicitly require libnm-gtk (#1509496)
+
 * Fri Dec 15 2017 Ray Strode <rstrode@redhat.com> - 3.26.2-2
 - Fix timerfd leak that crashes shell
   Resolves: #1516553
