@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.26.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -13,6 +13,8 @@ Source0:        http://download.gnome.org/sources/gnome-shell/3.26/%{name}-%{ver
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
 Patch2: 0001-background-don-t-leak-wall-clock-when-background-cha.patch
+# Backported fix for BGO #788931 / RHBZ #1469129, will be in 3.26.3
+Patch3: 0001-status-keyboard-Reset-menuItems-and-Label-objects-on.patch
 
 %define gnome_bluetooth_version 1:3.9.0
 %define gobject_introspection_version 1.45.4
@@ -118,6 +120,7 @@ easy to use experience.
 %setup -q
 %patch1 -p1 -b .firefox
 %patch2 -p1 -b .timerfdleak
+%patch3 -p1 -b .788931
 
 %build
 %meson
@@ -183,6 +186,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %{_mandir}/man1/%{name}.1.gz
 
 %changelog
+* Mon Jan 22 2018 Adam Williamson <awilliam@redhat.com> - 3.26.2-4
+- Backport fix for crasher bug BGO #788931 (#1469129)
+
 * Tue Dec 19 2017 Kalev Lember <klember@redhat.com> - 3.26.2-3
 - Explicitly require libnm-gtk (#1509496)
 
