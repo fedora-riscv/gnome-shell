@@ -1,6 +1,6 @@
 Name:           gnome-shell
-Version:        3.28.1
-Release:        3%{?dist}
+Version:        3.28.2
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 Group:          User Interface/Desktops
@@ -12,11 +12,6 @@ Source0:        http://download.gnome.org/sources/gnome-shell/3.28/%{name}-%{ver
 
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
-
-Patch10: 0001-polkitAgent-Guard-against-repeated-close-calls.patch
-# Fix problems when first character in password entry uses a modifier
-# key - GGO#240, RHBZ #1569211, backported from upstream master
-Patch11: 0001-keyboardManager-Preserve-current-keymap-across-reloa.patch
 
 %define gnome_bluetooth_version 1:3.9.0
 %define gobject_introspection_version 1.45.4
@@ -123,9 +118,6 @@ easy to use experience.
 %setup -q
 %patch1 -p1 -b .firefox
 
-%patch10 -p1 -b .polkit-fix
-%patch11 -p1 -b .preserve-keymap
-
 %build
 %meson
 %meson_build
@@ -190,6 +182,9 @@ glib-compile-schemas --allow-any-name %{_datadir}/glib-2.0/schemas &> /dev/null 
 %{_mandir}/man1/%{name}.1.gz
 
 %changelog
+* Tue May 08 2018 Florian Müllner <fmuellner@redhat.com> - 3.28.2-1
+- Update to 3.28.2
+
 * Sun Apr 29 2018 Adam Williamson <awilliam@redhat.com> - 3.28.1-3
 - Backport fix for password entry modifier key issues (#1569211)
 
