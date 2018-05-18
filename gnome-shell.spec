@@ -26,8 +26,10 @@ Patch1: gnome-shell-favourite-apps-firefox.patch
 %define gsettings_desktop_schemas_version 3.21.3
 %define ibus_version 1.5.2
 %define gnome_bluetooth_version 1:3.9.0
+%define gstreamer_version 1.4.5
 
 BuildRequires:  meson
+BuildRequires:  git
 BuildRequires:  ibus-devel >= %{ibus_version}
 BuildRequires:  chrpath
 BuildRequires:  dbus-glib-devel
@@ -47,7 +49,7 @@ BuildRequires:  startup-notification-devel
 # for theme generation
 BuildRequires:  sassc
 # for screencast recorder functionality
-BuildRequires:  gstreamer1-devel
+BuildRequires:  gstreamer1-devel >= %{gstreamer_version}
 BuildRequires:  gtk3-devel >= %{gtk3_version}
 BuildRequires:  gettext >= 0.19.6
 BuildRequires:  libcanberra-devel
@@ -70,7 +72,10 @@ BuildRequires: gtk-doc
 Requires:       gnome-bluetooth%{?_isa} >= %{gnome_bluetooth_version}
 %endif
 Requires:       gnome-desktop3%{?_isa} >= %{gnome_desktop_version}
+%if 0%{?fedora}
+# Disabled on RHEL to allow logging into KDE session by default
 Requires:       gnome-session-xsession
+%endif
 # wrapper script uses to restart old GNOME session if run --replace
 # from the command line
 Requires:       gobject-introspection%{?_isa} >= %{gobject_introspection_version}
@@ -92,6 +97,7 @@ Requires:       gsettings-desktop-schemas%{?_isa} >= %{gsettings_desktop_schemas
 Requires:       libcroco%{?_isa} >= %{libcroco_version}
 Requires:       telepathy-logger%{?_isa}
 Requires:       telepathy-glib%{?_isa}
+Requires:       gstreamer1%{?_isa} >= %{gstreamer_version}
 # needed for schemas
 Requires:       at-spi2-atk%{?_isa}
 # needed for on-screen keyboard
@@ -117,8 +123,7 @@ innovative user interface concepts to provide a visually attractive and
 easy to use experience.
 
 %prep
-%setup -q
-%patch1 -p1 -b .firefox
+%autosetup -S git
 
 %build
 %meson
