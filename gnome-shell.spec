@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        3.32.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -19,6 +19,11 @@ Patch3: 0002-endSessionDialog-Support-rebooting-into-the-bootload.patch
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=1691482
 Patch4: 0001-texture-cache-Keep-aspect-ratio-for-content-images.patch
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=1823445
+# https://gitlab.gnome.org/GNOME/gnome-shell/issues/1295
+# this is on upstream 3.32 branch but after 3.32.2 was tagged
+Patch5: 0001-boxpointer-Unset-the-sourceActor-on-destruction.patch
 
 %define libcroco_version 0.6.8
 %define eds_version 3.17.2
@@ -204,6 +209,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/%{name}.1.gz
 
 %changelog
+* Mon Apr 13 2020 Adam Williamson <awilliam@redhat.com> - 3.32.2-3
+- Backport MR #576 to fix a crash on screen lock
+  Resolves: #1823445
+
 * Mon Jun 03 2019 Florian Müllner <fmuellner@redhat.com> - 3.32.2-2
 - Fix preserving ratio on image loading
 
