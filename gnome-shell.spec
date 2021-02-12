@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        40.0~alpha.1.1
-Release:        4.20210202git9ce666ac1%{?dist}
+Release:        5.20210202git9ce666ac1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -219,6 +219,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Fri Feb 12 2021 Milan Crha <mcrha@redhat.com> - 40.0~alpha.1.1-5.20210202git9ce666ac1
+- Rebuilt for evolution-data-server soname version bump
+
 * Tue Feb 02 2021 Florian Müllner <fmuellner@redhat.com> - 40.0~alpha.1.1-4.20210202git9ce666ac1
 - Build snapshot of current upstream
 
