@@ -1,0 +1,39 @@
+From 778299a7d32058cbfc552c17648329d8e7161e44 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Florian=20M=C3=BCllner?= <fmuellner@gnome.org>
+Date: Thu, 11 Feb 2021 18:10:56 +0100
+Subject: [PATCH] overviewControls: Everything is lava!
+
+Account for the increased distance from Activities button to the
+show-apps button by allowing clicks on the background to bring up
+the app grid.
+---
+ js/ui/overviewControls.js | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/js/ui/overviewControls.js b/js/ui/overviewControls.js
+index 32388621e..06c875332 100644
+--- a/js/ui/overviewControls.js
++++ b/js/ui/overviewControls.js
+@@ -247,6 +247,7 @@ class ControlsManager extends St.Widget {
+             style_class: 'controls-manager',
+             x_expand: true,
+             y_expand: true,
++            reactive: true,
+             clip_to_allocation: true,
+         });
+ 
+@@ -321,6 +322,11 @@ class ControlsManager extends St.Widget {
+         this.dash.showAppsButton.connect('notify::checked',
+             this._onShowAppsButtonToggled.bind(this));
+ 
++        const clickAction = new Clutter.ClickAction();
++        clickAction.connect('clicked',
++            () => (this.dash.showAppsButton.checked = true));
++        this.add_action(clickAction);
++
+         Main.ctrlAltTabManager.addGroup(
+             this.appDisplay,
+             _('Applications'),
+-- 
+2.29.2
+

@@ -11,6 +11,8 @@ Source0: http://download.gnome.org/sources/gnome-shell/40/%{name}-40.alpha.1.1-2
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
 
+Patch2: 0001-overviewControls-Everything-is-lava.patch
+
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
 %define glib2_version 2.56.0
@@ -223,6 +225,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %changelog
 * Fri Feb 12 2021 Florian Müllner <fmuellner@redhat.com> - 40.0~alpha.1.1-6.20210212git829a096ba
 - Update snapshot to current upstream
+- Allow opening app picker by clicking overview background
 
 * Fri Feb 12 2021 Milan Crha <mcrha@redhat.com> - 40.0~alpha.1.1-5.20210202git9ce666ac1
 - Rebuilt for evolution-data-server soname version bump
