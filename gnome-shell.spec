@@ -99,6 +99,8 @@ Requires:       pipewire-gstreamer%{?_isa}
 Requires:       at-spi2-atk%{?_isa}
 # needed for on-screen keyboard
 Requires:       ibus%{?_isa} >= %{ibus_version}
+# needed for "show keyboard layout"
+Requires:       libgnomekbd
 # needed for the user menu
 Requires:       accountsservice-libs%{?_isa}
 Requires:       gdm-libs%{?_isa}
