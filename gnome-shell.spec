@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        40.0~alpha.1.1
-Release:        7.20210212git829a096ba%{?dist}
+Release:        8.20210212git829a096ba%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -223,6 +223,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Sun Feb 14 2021 Florian Müllner <fmuellner@redhat.com> - 40.0~alpha.1.1-8.20210212git829a096ba
+- Only open app picker on left-click/touch
+
 * Sun Feb 14 2021 Florian Müllner <fmuellner@redhat.com> - 40.0~alpha.1.1-7.20210212git829a096ba
 - Don't open app picker when clicking minimap
 

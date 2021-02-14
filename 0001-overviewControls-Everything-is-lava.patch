@@ -1,4 +1,4 @@
-From 17f73b8f70e5b5ea5b4eca5bebe4c533cba426ee Mon Sep 17 00:00:00 2001
+From 6817bec35d2036e8f56a0a4c94843b5fd7b4984f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Florian=20M=C3=BCllner?= <fmuellner@gnome.org>
 Date: Thu, 11 Feb 2021 18:10:56 +0100
 Subject: [PATCH 1/2] overviewControls: Everything is lava!
@@ -7,11 +7,11 @@ Account for the increased distance from Activities button to the
 show-apps button by allowing clicks on the background to bring up
 the app grid.
 ---
- js/ui/overviewControls.js | 6 ++++++
- 1 file changed, 6 insertions(+)
+ js/ui/overviewControls.js | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/js/ui/overviewControls.js b/js/ui/overviewControls.js
-index 32388621e..06c875332 100644
+index 32388621e..cd394e56a 100644
 --- a/js/ui/overviewControls.js
 +++ b/js/ui/overviewControls.js
 @@ -247,6 +247,7 @@ class ControlsManager extends St.Widget {
@@ -22,13 +22,16 @@ index 32388621e..06c875332 100644
              clip_to_allocation: true,
          });
  
-@@ -321,6 +322,11 @@ class ControlsManager extends St.Widget {
+@@ -321,6 +322,14 @@ class ControlsManager extends St.Widget {
          this.dash.showAppsButton.connect('notify::checked',
              this._onShowAppsButtonToggled.bind(this));
  
 +        const clickAction = new Clutter.ClickAction();
-+        clickAction.connect('clicked',
-+            () => (this.dash.showAppsButton.checked = true));
++        clickAction.connect('clicked', () => {
++            const button = clickAction.get_button();
++            if (button === 0 || button === 1)
++                this.dash.showAppsButton.checked = true;
++        });
 +        this.add_action(clickAction);
 +
          Main.ctrlAltTabManager.addGroup(
@@ -38,7 +41,7 @@ index 32388621e..06c875332 100644
 2.29.2
 
 
-From 9bd1649e37fbc2529e3bd243fae3c3a515eeb9d0 Mon Sep 17 00:00:00 2001
+From 20a31bd0d726fd7e0f7bcf6636ce6a9a453cb0f7 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Florian=20M=C3=BCllner?= <fmuellner@gnome.org>
 Date: Sun, 14 Feb 2021 19:24:52 +0100
 Subject: [PATCH 2/2] workspaceThumbnail: Always consume button/touch events on
@@ -48,14 +51,14 @@ Now that the background is reactive and opens the app grid, we have to
 be more careful when consuming or propagating events: Thumbnails must
 consume events, non-thumbnail parts should let them through.
 ---
- js/ui/workspaceThumbnail.js | 25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
+ js/ui/workspaceThumbnail.js | 28 ++++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 10 deletions(-)
 
 diff --git a/js/ui/workspaceThumbnail.js b/js/ui/workspaceThumbnail.js
-index 40a33fe3a..0ec04c5b0 100644
+index 40a33fe3a..6489a7eca 100644
 --- a/js/ui/workspaceThumbnail.js
 +++ b/js/ui/workspaceThumbnail.js
-@@ -708,25 +708,34 @@ var ThumbnailsBox = GObject.registerClass({
+@@ -708,26 +708,34 @@ var ThumbnailsBox = GObject.registerClass({
                  workspaceManager.n_workspaces > 1;
      }
  
@@ -71,7 +74,7 @@ index 40a33fe3a..0ec04c5b0 100644
 +    vfunc_button_press_event(buttonEvent) {
 +        const { x, y } = buttonEvent;
 +        return this._findThumbnailAtPoint(x, y)
-+            ? Clutter.EVENT_STOP: Clutter.EVENT_PROPAGATE;
++            ? Clutter.EVENT_STOP : Clutter.EVENT_PROPAGATE;
      }
  
      vfunc_button_release_event(buttonEvent) {
@@ -91,13 +94,15 @@ index 40a33fe3a..0ec04c5b0 100644
 +        if (!thumbnail)
 +            return Clutter.EVENT_PROPAGATE;
          if (touchEvent.type == Clutter.EventType.TOUCH_END &&
-             global.display.is_pointer_emulating_sequence(touchEvent.sequence)) {
+-            global.display.is_pointer_emulating_sequence(touchEvent.sequence)) {
 -            let { x, y } = touchEvent;
 -            this._activateThumbnailAtPoint(x, y, touchEvent.time);
+-        }
++            global.display.is_pointer_emulating_sequence(touchEvent.sequence))
 +            thumbnail.activate(touchEvent.time);
-         }
  
          return Clutter.EVENT_STOP;
+     }
 -- 
 2.29.2
 
