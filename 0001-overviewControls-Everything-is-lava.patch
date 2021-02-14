@@ -1,7 +1,7 @@
-From 778299a7d32058cbfc552c17648329d8e7161e44 Mon Sep 17 00:00:00 2001
+From 17f73b8f70e5b5ea5b4eca5bebe4c533cba426ee Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Florian=20M=C3=BCllner?= <fmuellner@gnome.org>
 Date: Thu, 11 Feb 2021 18:10:56 +0100
-Subject: [PATCH] overviewControls: Everything is lava!
+Subject: [PATCH 1/2] overviewControls: Everything is lava!
 
 Account for the increased distance from Activities button to the
 show-apps button by allowing clicks on the background to bring up
@@ -34,6 +34,70 @@ index 32388621e..06c875332 100644
          Main.ctrlAltTabManager.addGroup(
              this.appDisplay,
              _('Applications'),
+-- 
+2.29.2
+
+
+From 9bd1649e37fbc2529e3bd243fae3c3a515eeb9d0 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Florian=20M=C3=BCllner?= <fmuellner@gnome.org>
+Date: Sun, 14 Feb 2021 19:24:52 +0100
+Subject: [PATCH 2/2] workspaceThumbnail: Always consume button/touch events on
+ thumbnails
+
+Now that the background is reactive and opens the app grid, we have to
+be more careful when consuming or propagating events: Thumbnails must
+consume events, non-thumbnail parts should let them through.
+---
+ js/ui/workspaceThumbnail.js | 25 +++++++++++++++++--------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
+
+diff --git a/js/ui/workspaceThumbnail.js b/js/ui/workspaceThumbnail.js
+index 40a33fe3a..0ec04c5b0 100644
+--- a/js/ui/workspaceThumbnail.js
++++ b/js/ui/workspaceThumbnail.js
+@@ -708,25 +708,34 @@ var ThumbnailsBox = GObject.registerClass({
+                 workspaceManager.n_workspaces > 1;
+     }
+ 
+-    _activateThumbnailAtPoint(stageX, stageY, time) {
++    _findThumbnailAtPoint(stageX, stageY) {
+         const [r_, x] = this.transform_stage_point(stageX, stageY);
++        return this._thumbnails.find(t => x >= t.x && x <= t.x + t.width);
++    }
+ 
+-        const thumbnail = this._thumbnails.find(t => x >= t.x && x <= t.x + t.width);
+-        if (thumbnail)
+-            thumbnail.activate(time);
++    vfunc_button_press_event(buttonEvent) {
++        const { x, y } = buttonEvent;
++        return this._findThumbnailAtPoint(x, y)
++            ? Clutter.EVENT_STOP: Clutter.EVENT_PROPAGATE;
+     }
+ 
+     vfunc_button_release_event(buttonEvent) {
+-        let { x, y } = buttonEvent;
+-        this._activateThumbnailAtPoint(x, y, buttonEvent.time);
++        const { x, y } = buttonEvent;
++        const thumbnail = this._findThumbnailAtPoint(x, y);
++        if (!thumbnail)
++            return Clutter.EVENT_PROPAGATE;
++        thumbnail.activate(buttonEvent.time);
+         return Clutter.EVENT_STOP;
+     }
+ 
+     vfunc_touch_event(touchEvent) {
++        const { x, y } = touchEvent;
++        const thumbnail = this._findThumbnailAtPoint(x, y);
++        if (!thumbnail)
++            return Clutter.EVENT_PROPAGATE;
+         if (touchEvent.type == Clutter.EventType.TOUCH_END &&
+             global.display.is_pointer_emulating_sequence(touchEvent.sequence)) {
+-            let { x, y } = touchEvent;
+-            this._activateThumbnailAtPoint(x, y, touchEvent.time);
++            thumbnail.activate(touchEvent.time);
+         }
+ 
+         return Clutter.EVENT_STOP;
 -- 
 2.29.2
 
