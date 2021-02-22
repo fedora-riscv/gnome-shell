@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        40.0~alpha.1.1
-Release:        8.20210212git829a096ba%{?dist}
+Release:        9.20210212git829a096ba%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -96,7 +96,9 @@ Requires:       gsettings-desktop-schemas%{?_isa} >= %{gsettings_desktop_schemas
 Requires:       gnome-settings-daemon%{?_isa} >= %{gnome_settings_daemon_version}
 Requires:       gstreamer1%{?_isa} >= %{gstreamer_version}
 # needed for screen recorder
+Requires:       gstreamer1-plugins-good%{?_isa}
 Requires:       pipewire-gstreamer%{?_isa}
+Requires:       xdg-user-dirs-gtk
 # needed for schemas
 Requires:       at-spi2-atk%{?_isa}
 # needed for on-screen keyboard
@@ -223,6 +225,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Mon Feb 22 2021 Kalev Lember <klember@redhat.com> - 40.0~alpha.1.1-9.20210212git829a096ba
+- Add missing requires on gstreamer1-plugins-good and xdg-user-dirs-gtk (#1931342)
+
 * Sun Feb 14 2021 Florian Müllner <fmuellner@redhat.com> - 40.0~alpha.1.1-8.20210212git829a096ba
 - Only open app picker on left-click/touch
 
