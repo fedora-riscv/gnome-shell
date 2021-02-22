@@ -5,7 +5,6 @@ Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
 URL:            https://wiki.gnome.org/Projects/GnomeShell
-#VCS:           git:git://git.gnome.org/gnome-shell
 Source0: http://download.gnome.org/sources/gnome-shell/40/%{name}-40.alpha.1.1-228-g829a096ba.tar.xz
 
 # Replace Epiphany with Firefox in the default favourite apps list
@@ -84,6 +83,7 @@ Requires:       gobject-introspection%{?_isa} >= %{gobject_introspection_version
 Requires:       gjs%{?_isa} >= %{gjs_version}
 Requires:       gtk3%{?_isa} >= %{gtk3_version}
 Requires:       gtk4%{?_isa} >= %{gtk4_version}
+Requires:       highcontrast-icon-theme
 Requires:       libnma%{?_isa}
 # needed for loading SVG's via gdk-pixbuf
 Requires:       librsvg2%{?_isa}
