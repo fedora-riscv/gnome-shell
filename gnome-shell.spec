@@ -1,16 +1,14 @@
 Name:           gnome-shell
-Version:        40.0~alpha.1.1
-Release:        9.20210212git829a096ba%{?dist}
+Version:        40.0~beta
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
 URL:            https://wiki.gnome.org/Projects/GnomeShell
-Source0: http://download.gnome.org/sources/gnome-shell/40/%{name}-40.alpha.1.1-228-g829a096ba.tar.xz
+Source0: http://download.gnome.org/sources/gnome-shell/40/%{name}-40.beta.tar.xz
 
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
-
-Patch2: 0001-overviewControls-Everything-is-lava.patch
 
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
@@ -225,6 +223,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Tue Feb 23 2021 Florian Müllner <fmuellner@redhat.com> - 40.0~beta-1
+- Update to 40.beta
+
 * Mon Feb 22 2021 Kalev Lember <klember@redhat.com> - 40.0~alpha.1.1-9.20210212git829a096ba
 - Add missing requires on gstreamer1-plugins-good and xdg-user-dirs-gtk (#1931342)
 
