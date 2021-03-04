@@ -1,14 +1,16 @@
 Name:           gnome-shell
 Version:        40.0~beta
-Release:        1%{?dist}
+Release:        2.20210304git7a57528bd%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
 URL:            https://wiki.gnome.org/Projects/GnomeShell
-Source0: http://download.gnome.org/sources/gnome-shell/40/%{name}-40.beta.tar.xz
+Source0: http://download.gnome.org/sources/gnome-shell/40/%{name}-40.beta-79-g7a57528bd.tar.xz
 
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
+# Undo post-release version bump for snapshot
+Patch2: 0001-build-Lower-mutter-requirement.patch
 
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
@@ -147,7 +149,7 @@ innovative user interface concepts to provide a visually attractive and
 easy to use experience.
 
 %prep
-%autosetup -S git -n %{name}-40.beta
+%autosetup -S git -n %{name}-40.rc
 
 %build
 %meson -Dextensions_app=false
@@ -223,6 +225,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Thu Mar 04 2021 Florian Müllner <fmuellner@redhat.com> - 40.0~beta-2.20210304git40.7a57528bd
+- Build snapshot of current upstream
+
 * Tue Feb 23 2021 Florian Müllner <fmuellner@redhat.com> - 40.0~beta-1
 - Update to 40.beta
 
