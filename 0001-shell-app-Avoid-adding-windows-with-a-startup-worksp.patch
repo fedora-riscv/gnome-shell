@@ -1,0 +1,58 @@
+From f9f936e71a35dd9a383ba26763cf69c696d08ed4 Mon Sep 17 00:00:00 2001
+From: Sebastian Keller <skeller@gnome.org>
+Date: Sun, 7 Mar 2021 16:57:44 +0100
+Subject: [PATCH] shell/app: Avoid adding windows with a startup workspace
+ twice
+
+Changing the workspace of a window causes the window tracker to remove
+and add it to the app again. If this happens from within
+_shell_app_add_window() before the window has been added to the windows
+list, this will cause the check that is supposed to prevent adding the
+same window multiple times to fail and the window to be added twice.
+The app will then be considered still running after the last window has
+been closed. Then when clicking on the corresponding app icon, the shell
+would attempt to switch to a NULL workspace for the closed window
+instead of starting a new instance, resulting in a crash.
+
+Changing the workspace also needs to happen after increasing the
+interesting window count, because otherwise removal of the window by
+the window tracker would trigger a uint underflow leading the app to be
+considered running with UINT_MAX interesting windows, despite having no
+windows, leading to crashes right after launching the app.
+
+Fixes https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/3833
+
+Part-of: <https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1745>
+---
+ src/shell-app.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/shell-app.c b/src/shell-app.c
+index 7d7b5510d..17b179cba 100644
+--- a/src/shell-app.c
++++ b/src/shell-app.c
+@@ -1081,10 +1081,6 @@ _shell_app_add_window (ShellApp        *app,
+   if (!app->running_state)
+       create_running_state (app);
+ 
+-  if (app->started_on_workspace >= 0)
+-    meta_window_change_workspace_by_index (window, app->started_on_workspace, FALSE);
+-  app->started_on_workspace = -1;
+-
+   app->running_state->window_sort_stale = TRUE;
+   app->running_state->windows = g_slist_prepend (app->running_state->windows, g_object_ref (window));
+   g_signal_connect_object (window, "unmanaged", G_CALLBACK(shell_app_on_unmanaged), app, 0);
+@@ -1098,6 +1094,10 @@ _shell_app_add_window (ShellApp        *app,
+     app->running_state->interesting_windows++;
+   shell_app_sync_running_state (app);
+ 
++  if (app->started_on_workspace >= 0)
++    meta_window_change_workspace_by_index (window, app->started_on_workspace, FALSE);
++  app->started_on_workspace = -1;
++
+   g_object_thaw_notify (G_OBJECT (app));
+ 
+   g_signal_emit (app, shell_app_signals[WINDOWS_CHANGED], 0);
+-- 
+2.30.1
+

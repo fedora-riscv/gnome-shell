@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        40.0~beta
-Release:        2.20210304git7a57528bd%{?dist}
+Release:        3.20210304git7a57528bd%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -11,6 +11,7 @@ Source0: http://download.gnome.org/sources/gnome-shell/40/%{name}-40.beta-79-g7a
 Patch1: gnome-shell-favourite-apps-firefox.patch
 # Undo post-release version bump for snapshot
 Patch2: 0001-build-Lower-mutter-requirement.patch
+Patch3: 0001-shell-app-Avoid-adding-windows-with-a-startup-worksp.patch
 
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
@@ -225,6 +226,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Mon Mar 08 2021 Florian Müllner <fmuellner@redhat.com> - 40.0~beta-3.20210304git40.7a57528bd
+- Fix crash after launching apps via drag-and-drop
+
 * Thu Mar 04 2021 Florian Müllner <fmuellner@redhat.com> - 40.0~beta-2.20210304git40.7a57528bd
 - Build snapshot of current upstream
 
