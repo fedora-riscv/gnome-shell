@@ -1,6 +1,6 @@
 Name:           gnome-shell
 Version:        40.0~beta
-Release:        3.20210304git7a57528bd%{?dist}
+Release:        4.20210304git7a57528bd%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -76,7 +76,7 @@ Requires:       gnome-bluetooth%{?_isa} >= %{gnome_bluetooth_version}
 Requires:       gnome-desktop3%{?_isa} >= %{gnome_desktop_version}
 %if 0%{?rhel} != 7
 # Disabled on RHEL 7 to allow logging into KDE session by default
-Requires:       gnome-session-xsession
+Recommends:     gnome-session-xsession
 %endif
 # wrapper script uses to restart old GNOME session if run --replace
 # from the command line
@@ -226,6 +226,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Thu Mar 11 2021 Kalev Lember <klember@redhat.com> - 40.0~beta-4.20210304git7a57528bd
+- Recommend gnome-session-xsession rather than hard-require it
+
 * Mon Mar 08 2021 Florian Müllner <fmuellner@redhat.com> - 40.0~beta-3.20210304git40.7a57528bd
 - Fix crash after launching apps via drag-and-drop
 
