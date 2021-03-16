@@ -1,11 +1,13 @@
+%global tarball_version %%(echo %{version} | tr '~' '.')
+
 Name:           gnome-shell
-Version:        40.0~rc
+Version:        40.0
 Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
 URL:            https://wiki.gnome.org/Projects/GnomeShell
-Source0: http://download.gnome.org/sources/gnome-shell/40/%{name}-40.rc.tar.xz
+Source0: http://download.gnome.org/sources/gnome-shell/40/%{name}-%{tarball_version}.tar.xz
 
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
@@ -147,7 +149,7 @@ innovative user interface concepts to provide a visually attractive and
 easy to use experience.
 
 %prep
-%autosetup -S git -n %{name}-40.rc
+%autosetup -S git -n %{name}-%{tarball_version}
 
 %build
 %meson -Dextensions_app=false
@@ -223,6 +225,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Sat Mar 20 2021 Florian Müllner <fmuellner@redhat.com> - 40.0-1
+- Update to 40.0
+
 * Mon Mar 15 2021 Florian Müllner <fmuellner@redhat.com> - 40.0~rc-1
 - Update to 40.rc
 
