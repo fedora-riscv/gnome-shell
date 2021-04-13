@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        40.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -11,6 +11,9 @@ Source0: http://download.gnome.org/sources/gnome-shell/40/%{name}-%{tarball_vers
 
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=1940618
+Patch10001: 0001-loginDialog-Allow-timed-login-with-disabled-user-lis.patch
 
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
@@ -225,6 +228,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Tue Apr 13 2021 Ray Strode <rstrode@redhat.com> - 40.0-2
+- Fix timed login when user list is disabled
+  Resolves: #1940618
+
 * Sat Mar 20 2021 Florian Müllner <fmuellner@redhat.com> - 40.0-1
 - Update to 40.0
 

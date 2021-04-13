@@ -1,0 +1,422 @@
+From 3aa4ec6dc18a117a0124cae5e2bddfe7cf6ea0b7 Mon Sep 17 00:00:00 2001
+From: Ray Strode <rstrode@redhat.com>
+Date: Tue, 13 Apr 2021 10:59:49 -0400
+Subject: [PATCH] loginDialog: Allow timed login with disabled user list
+
+At the moment the timed login feature is implemented in the user list.
+If there's no user list, we don't show the indicator anywhere and
+don't proceed with timed login.
+
+This commit allows timed login to work when the user list is disabled.
+It accomplishes this by putting the timed login indicator on the
+auth prompt in that scenario.
+---
+ .../widgets/_login-dialog.scss                |  5 +++
+ js/gdm/authPrompt.js                          | 41 ++++++++++++++++++-
+ js/gdm/loginDialog.js                         | 24 ++++++++++-
+ subprojects/gvc                               |  2 +-
+ 4 files changed, 68 insertions(+), 4 deletions(-)
+
+diff --git a/data/theme/gnome-shell-sass/widgets/_login-dialog.scss b/data/theme/gnome-shell-sass/widgets/_login-dialog.scss
+index d6608fc30..1789beca9 100644
+--- a/data/theme/gnome-shell-sass/widgets/_login-dialog.scss
++++ b/data/theme/gnome-shell-sass/widgets/_login-dialog.scss
+@@ -124,46 +124,51 @@
+   &:ltr .user-widget { padding-right: 1em; }
+   &:rtl .user-widget { padding-left: 1em; }
+   .login-dialog-timed-login-indicator {
+     height: 2px;
+     margin-top: 6px;
+     background-color: $osd_fg_color;
+   }
+   &:focus .login-dialog-timed-login-indicator { background-color: $selected_fg_color; }
+ }
+ 
+ .user-widget-label {
+   color: $osd_fg_color;
+ }
+ 
+ .user-widget.horizontal .user-widget-label {
+   @include fontsize($base_font_size + 2);
+   font-weight: bold;
+   padding-left: 15px;
+ 
+   &:ltr { padding-left: 14px; text-align: left; }
+   &:rtl { padding-right: 14px; text-align: right; }
+ }
+ 
+ .user-widget.vertical .user-widget-label {
+   @include fontsize($base_font_size + 5);
+   text-align: center;
+   font-weight: normal;
+   padding-top: 16px;
+ }
+ 
++.login-dialog-timed-login-indicator {
++    height: 2px;
++    background-color: darken($fg_color,40%);
++}
++
+ .login-dialog-prompt-layout {
+   padding-top: 24px;
+   padding-bottom: 12px;
+   spacing: $base_spacing * 2;
+   width: 23em;
+ }
+ 
+ .login-dialog-prompt-entry {
+   height: 1.5em;
+ }
+ 
+ .login-dialog-prompt-label {
+   color: darken($osd_fg_color, 20%);
+   @include fontsize($base_font_size + 1);
+   padding-top: 1em;
+ }
+diff --git a/js/gdm/authPrompt.js b/js/gdm/authPrompt.js
+index d2c9a1659..07de0f8d2 100644
+--- a/js/gdm/authPrompt.js
++++ b/js/gdm/authPrompt.js
+@@ -1,34 +1,34 @@
+ // -*- mode: js; js-indent-level: 4; indent-tabs-mode: nil -*-
+ /* exported AuthPrompt */
+ 
+-const { Clutter, GObject, Pango, Shell, St } = imports.gi;
++const { Clutter, GLib, GObject, Pango, Shell, St } = imports.gi;
+ 
+ const Animation = imports.ui.animation;
+ const Batch = imports.gdm.batch;
+ const GdmUtil = imports.gdm.util;
+ const OVirt = imports.gdm.oVirt;
+ const Vmware = imports.gdm.vmware;
+ const Params = imports.misc.params;
+ const ShellEntry = imports.ui.shellEntry;
+ const UserWidget = imports.ui.userWidget;
+ const Util = imports.misc.util;
+ 
+ var DEFAULT_BUTTON_WELL_ICON_SIZE = 16;
+ var DEFAULT_BUTTON_WELL_ANIMATION_DELAY = 1000;
+ var DEFAULT_BUTTON_WELL_ANIMATION_TIME = 300;
+ 
+ var MESSAGE_FADE_OUT_ANIMATION_TIME = 500;
+ 
+ var AuthPromptMode = {
+     UNLOCK_ONLY: 0,
+     UNLOCK_OR_LOG_IN: 1,
+ };
+ 
+ var AuthPromptStatus = {
+     NOT_VERIFYING: 0,
+     VERIFYING: 1,
+     VERIFICATION_FAILED: 2,
+     VERIFICATION_SUCCEEDED: 3,
+     VERIFICATION_CANCELLED: 4,
+     VERIFICATION_IN_PROGRESS: 5,
+ };
+@@ -143,88 +143,127 @@ var AuthPrompt = GObject.registerClass({
+             reactive: this._hasCancelButton,
+             can_focus: this._hasCancelButton,
+             x_align: Clutter.ActorAlign.START,
+             y_align: Clutter.ActorAlign.CENTER,
+             child: new St.Icon({ icon_name: 'go-previous-symbolic' }),
+         });
+         if (this._hasCancelButton)
+             this.cancelButton.connect('clicked', () => this.cancel());
+         else
+             this.cancelButton.opacity = 0;
+         this._mainBox.add_child(this.cancelButton);
+ 
+         let entryParams = {
+             style_class: 'login-dialog-prompt-entry',
+             can_focus: true,
+             x_expand: true,
+         };
+ 
+         this._entry = null;
+ 
+         this._textEntry = new St.Entry(entryParams);
+         ShellEntry.addContextMenu(this._textEntry, { actionMode: Shell.ActionMode.NONE });
+ 
+         this._passwordEntry = new St.PasswordEntry(entryParams);
+         ShellEntry.addContextMenu(this._passwordEntry, { actionMode: Shell.ActionMode.NONE });
+ 
+         this._entry = this._passwordEntry;
+         this._mainBox.add_child(this._entry);
+         this._entry.grab_key_focus();
+ 
++        this._timedLoginIndicator = new St.Bin({ style_class: 'login-dialog-timed-login-indicator',
++                                                 scale_x: 0 });
++
++        this.actor.add(this._timedLoginIndicator);
++
+         [this._textEntry, this._passwordEntry].forEach(entry => {
+             entry.clutter_text.connect('text-changed', () => {
+                 if (!this._userVerifier.hasPendingMessages)
+                     this._fadeOutMessage();
+             });
+ 
+             entry.clutter_text.connect('activate', () => {
+                 let shouldSpin = entry === this._passwordEntry;
+                 if (entry.reactive)
+                     this._activateNext(shouldSpin);
+             });
+         });
+ 
+         this._defaultButtonWell = new St.Widget({
+             layout_manager: new Clutter.BinLayout(),
+             x_align: Clutter.ActorAlign.END,
+             y_align: Clutter.ActorAlign.CENTER,
+         });
+         this._defaultButtonWell.add_constraint(new Clutter.BindConstraint({
+             source: this.cancelButton,
+             coordinate: Clutter.BindCoordinate.WIDTH,
+         }));
+         this._mainBox.add_child(this._defaultButtonWell);
+ 
+         this._spinner = new Animation.Spinner(DEFAULT_BUTTON_WELL_ICON_SIZE);
+         this._defaultButtonWell.add_child(this._spinner);
+     }
+ 
++    showTimedLoginIndicator(time) {
++        let hold = new Batch.Hold();
++
++        this.hideTimedLoginIndicator();
++
++        let startTime = GLib.get_monotonic_time();
++
++        this._timedLoginTimeoutId = GLib.timeout_add (GLib.PRIORITY_DEFAULT, 33,
++            () => {
++                let currentTime = GLib.get_monotonic_time();
++                let elapsedTime = (currentTime - startTime) / GLib.USEC_PER_SEC;
++                this._timedLoginIndicator.scale_x = elapsedTime / time;
++                if (elapsedTime >= time) {
++                    this._timedLoginTimeoutId = 0;
++                    hold.release();
++                    return GLib.SOURCE_REMOVE;
++                }
++
++                return GLib.SOURCE_CONTINUE;
++            });
++
++        GLib.Source.set_name_by_id(this._timedLoginTimeoutId, '[gnome-shell] this._timedLoginTimeoutId');
++
++        return hold;
++    }
++
++    hideTimedLoginIndicator() {
++        if (this._timedLoginTimeoutId) {
++            GLib.source_remove(this._timedLoginTimeoutId);
++            this._timedLoginTimeoutId = 0;
++        }
++        this._timedLoginIndicator.scale_x = 0.;
++    }
++
+     _activateNext(shouldSpin) {
+         this.verificationStatus = AuthPromptStatus.VERIFICATION_IN_PROGRESS;
+         this.updateSensitivity(false);
+ 
+         if (shouldSpin)
+             this.startSpinning();
+ 
+         if (this._queryingService)
+             this._userVerifier.answerQuery(this._queryingService, this._entry.text);
+         else
+             this._preemptiveAnswer = this._entry.text;
+ 
+         this.emit('next');
+     }
+ 
+     _updateEntry(secret) {
+         if (secret && this._entry !== this._passwordEntry) {
+             this._mainBox.replace_child(this._entry, this._passwordEntry);
+             this._entry = this._passwordEntry;
+         } else if (!secret && this._entry !== this._textEntry) {
+             this._mainBox.replace_child(this._entry, this._textEntry);
+             this._entry = this._textEntry;
+         }
+         this._capsLockWarningLabel.visible = secret;
+     }
+ 
+     _onAskQuestion(verifier, serviceName, question, secret) {
+         if (this._queryingService)
+             this.clear();
+ 
+diff --git a/js/gdm/loginDialog.js b/js/gdm/loginDialog.js
+index 6f66a2759..72d3322db 100644
+--- a/js/gdm/loginDialog.js
++++ b/js/gdm/loginDialog.js
+@@ -735,60 +735,63 @@ var LoginDialog = GObject.registerClass({
+     }
+ 
+     _ensureUserListLoaded() {
+         if (!this._userManager.is_loaded) {
+             this._userManagerLoadedId = this._userManager.connect('notify::is-loaded',
+                 () => {
+                     if (this._userManager.is_loaded) {
+                         this._loadUserList();
+                         this._userManager.disconnect(this._userManagerLoadedId);
+                         this._userManagerLoadedId = 0;
+                     }
+                 });
+         } else {
+             let id = GLib.idle_add(GLib.PRIORITY_DEFAULT, this._loadUserList.bind(this));
+             GLib.Source.set_name_by_id(id, '[gnome-shell] _loadUserList');
+         }
+     }
+ 
+     _updateDisableUserList() {
+         let disableUserList = this._settings.get_boolean(GdmUtil.DISABLE_USER_LIST_KEY);
+ 
+         // Disable user list when there are no users.
+         if (this._userListLoaded && this._userList.numItems() == 0)
+             disableUserList = true;
+ 
+         if (disableUserList != this._disableUserList) {
+             this._disableUserList = disableUserList;
+ 
+             if (this._authPrompt.verificationStatus == AuthPrompt.AuthPromptStatus.NOT_VERIFYING)
+                 this._authPrompt.reset();
++
++            if (this._disableUserList && this._timedLoginUserListHold)
++                this._timedLoginUserListHold.release();
+         }
+     }
+ 
+     _updateCancelButton() {
+         let cancelVisible;
+ 
+         // Hide the cancel button if the user list is disabled and we're asking for
+         // a username
+         if (this._authPrompt.verificationStatus == AuthPrompt.AuthPromptStatus.NOT_VERIFYING && this._disableUserList)
+             cancelVisible = false;
+         else
+             cancelVisible = true;
+ 
+         this._authPrompt.cancelButton.visible = cancelVisible;
+     }
+ 
+     _updateBanner() {
+         let enabled = this._settings.get_boolean(GdmUtil.BANNER_MESSAGE_KEY);
+         let text = this._settings.get_string(GdmUtil.BANNER_MESSAGE_TEXT_KEY);
+ 
+         if (enabled && text) {
+             this._bannerLabel.set_text(text);
+             this._bannerLabel.show();
+         } else {
+             this._bannerLabel.hide();
+         }
+     }
+ 
+     _fadeInBannerView() {
+         this._bannerView.show();
+@@ -1021,91 +1024,108 @@ var LoginDialog = GObject.registerClass({
+ 
+         this._timedLoginIdleTimeOutId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, _TIMED_LOGIN_IDLE_THRESHOLD,
+             () => {
+                 this._timedLoginIdleTimeOutId = 0;
+                 hold.release();
+                 return GLib.SOURCE_REMOVE;
+             });
+         GLib.Source.set_name_by_id(this._timedLoginIdleTimeOutId, '[gnome-shell] this._timedLoginIdleTimeOutId');
+         return hold;
+     }
+ 
+     _startTimedLogin(userName, delay) {
+         let firstRun = true;
+ 
+         // Cancel execution of old batch
+         if (this._timedLoginBatch) {
+             this._timedLoginBatch.cancel();
+             this._timedLoginBatch = null;
+             firstRun = false;
+         }
+ 
+         // Reset previous idle-timeout
+         if (this._timedLoginIdleTimeOutId) {
+             GLib.source_remove(this._timedLoginIdleTimeOutId);
+             this._timedLoginIdleTimeOutId = 0;
+         }
+ 
+         let loginItem = null;
+         let animationTime;
+ 
+-        let tasks = [() => this._waitForItemForUser(userName),
++        let tasks = [() => {
++                         if (this._disableUserList)
++                             return;
++
++                         this._timedLoginUserListHold = this._waitForItemForUser(userName);
++
++                         return this._timedLoginUserListHold;
++                     },
+ 
+                      () => {
+-                         loginItem = this._userList.getItemFromUserName(userName);
++                         this._timedLoginUserListHold = null;
++
++                         loginItem = this._disableUserList
++                            ? this._authPrompt
++                            : this._userList.getItemFromUserName(userName);
+ 
+                          // If there is an animation running on the item, reset it.
+                          loginItem.hideTimedLoginIndicator();
+                      },
+ 
+                      () => {
++                         if (this._disableUserList)
++                             return;
++
+                          // If we're just starting out, start on the right item.
+                          if (!this._userManager.is_loaded)
+                              this._userList.jumpToItem(loginItem);
+                      },
+ 
+                      () => {
+                          // This blocks the timed login animation until a few
+                          // seconds after the user stops interacting with the
+                          // login screen.
+ 
+                          // We skip this step if the timed login delay is very short.
+                          if (delay > _TIMED_LOGIN_IDLE_THRESHOLD) {
+                              animationTime = delay - _TIMED_LOGIN_IDLE_THRESHOLD;
+                              return this._blockTimedLoginUntilIdle();
+                          } else {
+                              animationTime = delay;
+                              return null;
+                          }
+                      },
+ 
+                      () => {
++                         if (this._disableUserList)
++                             return;
++
+                          // If idle timeout is done, make sure the timed login indicator is shown
+                          if (delay > _TIMED_LOGIN_IDLE_THRESHOLD &&
+                              this._authPrompt.visible)
+                              this._authPrompt.cancel();
+ 
+                          if (delay > _TIMED_LOGIN_IDLE_THRESHOLD || firstRun) {
+                              this._userList.scrollToItem(loginItem);
+                              loginItem.grab_key_focus();
+                          }
+                      },
+ 
+                      () => loginItem.showTimedLoginIndicator(animationTime),
+ 
+                      () => {
+                          this._timedLoginBatch = null;
+                          this._greeter.call_begin_auto_login_sync(userName, null);
+                      }];
+ 
+         this._timedLoginBatch = new Batch.ConsecutiveBatch(this, tasks);
+ 
+         return this._timedLoginBatch.run();
+     }
+ 
+     _onTimedLoginRequested(client, userName, seconds) {
+         if (this._timedLoginBatch)
+             return;
+ 
+         this._startTimedLogin(userName, seconds);
+ 
+         // Restart timed login on user interaction
