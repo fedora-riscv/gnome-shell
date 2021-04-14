@@ -1,0 +1,32 @@
+From dd7d33622875c70f3f5965f387e4de7c99fbf330 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Florian=20M=C3=BCllner?= <fmuellner@gnome.org>
+Date: Thu, 8 Apr 2021 17:31:54 +0200
+Subject: [PATCH 2/2] workspacesView: Don't tie PgUp/PgDown to mapped state
+
+Both app grid and window picker are now always visible in the overview,
+so their handling of the PgUp/PgDown keys conflicts.
+
+Resolve that by checking for the overview state instead.
+
+Part-of: <https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1798>
+---
+ js/ui/workspacesView.js | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/js/ui/workspacesView.js b/js/ui/workspacesView.js
+index 2c9da5c9b..502590418 100644
+--- a/js/ui/workspacesView.js
++++ b/js/ui/workspacesView.js
+@@ -1142,7 +1142,8 @@ class WorkspacesDisplay extends St.Widget {
+     }
+ 
+     _onKeyPressEvent(actor, event) {
+-        if (!this.mapped)
++        const { ControlsState } = OverviewControls;
++        if (this._overviewAdjustment.value !== ControlsState.WINDOW_PICKER)
+             return Clutter.EVENT_PROPAGATE;
+ 
+         const { workspaceManager } = global;
+-- 
+2.31.1
+

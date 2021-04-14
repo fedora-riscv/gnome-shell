@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        40.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -14,6 +14,12 @@ Patch1: gnome-shell-favourite-apps-firefox.patch
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=1940618
 Patch10001: 0001-loginDialog-Allow-timed-login-with-disabled-user-lis.patch
+# Fix PgUp/PgDn for scrolling between workspaces / app grid pages
+# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1798
+# https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/4086
+Patch10002: 0001-workspacesView-Fix-PgUp-PgDown-shortcut.patch
+Patch10003: 0002-workspacesView-Don-t-tie-PgUp-PgDown-to-mapped-state.patch
+
 
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
@@ -228,6 +234,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Tue Apr 13 2021 Adam Williamson <awilliam@redhat.com> - 40.0-3
+- Fix scrolling between workspaces/app grid pages with PgUp/PgDn
+
 * Tue Apr 13 2021 Ray Strode <rstrode@redhat.com> - 40.0-2
 - Fix timed login when user list is disabled
   Resolves: #1940618
