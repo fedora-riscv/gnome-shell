@@ -1,0 +1,34 @@
+From 0074c6870b284578d25c06b61ab8011cf8bbb8da Mon Sep 17 00:00:00 2001
+From: Benjamin Berg <bberg@redhat.com>
+Date: Fri, 23 Apr 2021 19:44:52 +0200
+Subject: [PATCH] gdm: Only emit verification failed for foreground service
+
+A failing background service should not count as a verification failure
+as the user can still try to continue using the current foreground
+service.
+
+As such, only emit the 'verification-failed' signal when the failing
+service was the foreground service.
+
+Closes: #3853
+---
+ js/gdm/util.js | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/js/gdm/util.js b/js/gdm/util.js
+index 1ee84acde..e7e575dba 100644
+--- a/js/gdm/util.js
++++ b/js/gdm/util.js
+@@ -721,7 +721,8 @@ var ShellUserVerifier = class {
+             }
+         }
+ 
+-        this.emit('verification-failed', serviceName, canRetry);
++        if (this.serviceIsForeground(serviceName))
++            this.emit('verification-failed', serviceName, canRetry);
+     }
+ 
+     _onServiceUnavailable(_client, serviceName, errorMessage) {
+-- 
+2.30.2
+

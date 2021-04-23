@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        40.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -19,6 +19,9 @@ Patch10001: 0001-loginDialog-Allow-timed-login-with-disabled-user-lis.patch
 # https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/4086
 Patch10002: 0001-workspacesView-Fix-PgUp-PgDown-shortcut.patch
 Patch10003: 0002-workspacesView-Don-t-tie-PgUp-PgDown-to-mapped-state.patch
+
+# Some users might have a broken PAM config, so we really need this
+Patch10004: 0001-gdm-Only-emit-verification-failed-for-foreground-ser.patch
 
 
 %define eds_version 3.33.1
@@ -234,6 +237,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Fri Apr 23 2021 Benjamin Berg <bberg@redhat.com> - 40.0-4
+- Fix password auth after secondary service failure
+  Related: #1942443
+
 * Tue Apr 13 2021 Adam Williamson <awilliam@redhat.com> - 40.0-3
 - Fix scrolling between workspaces/app grid pages with PgUp/PgDn
 
