@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        40.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -20,8 +20,11 @@ Patch10001: 0001-loginDialog-Allow-timed-login-with-disabled-user-lis.patch
 Patch10002: 0001-workspacesView-Fix-PgUp-PgDown-shortcut.patch
 Patch10003: 0002-workspacesView-Don-t-tie-PgUp-PgDown-to-mapped-state.patch
 
-# Some users might have a broken PAM config, so we really need this
-Patch10004: 0001-gdm-Only-emit-verification-failed-for-foreground-ser.patch
+# Some users might have a broken PAM config, so we really need this.
+# The upstream patchset fixes password auth after a fingerprint failure.
+# The second is a downstream patch to stop trying on configuration errors.
+Patch10004: https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1821.patch
+Patch10005: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 
 
 %define eds_version 3.33.1
@@ -237,6 +240,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Wed Apr 28 2021 Benjamin Berg <bberg@redhat.com> - 40.0-5
+- Update fix for password auth after background service failure
+  Related: #1942443
+
 * Fri Apr 23 2021 Benjamin Berg <bberg@redhat.com> - 40.0-4
 - Fix password auth after secondary service failure
   Related: #1942443
