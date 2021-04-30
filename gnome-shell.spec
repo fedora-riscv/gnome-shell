@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        40.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -137,6 +137,8 @@ Requires:       bolt%{?_isa}
 # Needed for launching flatpak apps etc
 # 1.8.0 is needed for source type support in the screencast portal.
 Requires:       xdg-desktop-portal-gtk >= 1.8.0
+# needed by the welcome dialog
+Recommends:     gnome-tour
 
 Provides:       desktop-notification-daemon = %{version}-%{release}
 Provides:       PolicyKit-authentication-agent = %{version}-%{release}
@@ -240,6 +242,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Fri Apr 30 2021 Kalev Lember <klember@redhat.com> - 40.0-6
+- Move gnome-tour dep here from gnome-initial-setup (#1955179)
+
 * Wed Apr 28 2021 Benjamin Berg <bberg@redhat.com> - 40.0-5
 - Update fix for password auth after background service failure
   Related: #1942443
