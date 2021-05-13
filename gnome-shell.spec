@@ -1,8 +1,8 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        40.0
-Release:        6%{?dist}
+Version:        40.1
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -12,18 +12,8 @@ Source0: http://download.gnome.org/sources/gnome-shell/40/%{name}-%{tarball_vers
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
 
-# https://bugzilla.redhat.com/show_bug.cgi?id=1940618
-Patch10001: 0001-loginDialog-Allow-timed-login-with-disabled-user-lis.patch
-# Fix PgUp/PgDn for scrolling between workspaces / app grid pages
-# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1798
-# https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/4086
-Patch10002: 0001-workspacesView-Fix-PgUp-PgDown-shortcut.patch
-Patch10003: 0002-workspacesView-Don-t-tie-PgUp-PgDown-to-mapped-state.patch
-
-# Some users might have a broken PAM config, so we really need this.
-# The upstream patchset fixes password auth after a fingerprint failure.
-# The second is a downstream patch to stop trying on configuration errors.
-Patch10004: https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1821.patch
+# Some users might have a broken PAM config, so we really need this
+# downstream patch to stop trying on configuration errors.
 Patch10005: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 
 
@@ -242,6 +232,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Thu May 13 2021 Florian Müllner <fmuellner@redhat.com> - 40.1-1
+- Update to 40.1
+
 * Fri Apr 30 2021 Kalev Lember <klember@redhat.com> - 40.0-6
 - Move gnome-tour dep here from gnome-initial-setup (#1955179)
 
