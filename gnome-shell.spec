@@ -132,6 +132,8 @@ Recommends:     gnome-tour
 
 Provides:       desktop-notification-daemon = %{version}-%{release}
 Provides:       PolicyKit-authentication-agent = %{version}-%{release}
+Provides:       bundled(gvc)
+Provides:       bundled(libcroco) = 0.6.13
 
 %if 0%{?rhel}
 # In Fedora, fedora-obsolete-packages obsoletes caribou
