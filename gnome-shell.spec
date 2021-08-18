@@ -1,8 +1,8 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        40.3
-Release:        2%{?dist}
+Version:        41~beta
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -24,9 +24,9 @@ Patch10005: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 %define gjs_version 1.57.3
 %define gtk3_version 3.15.0
 %define gtk4_version 4.0.0
-%define mutter_version 40.0~alpha.1.1
+%define mutter_version 41~beta
 %define polkit_version 0.100
-%define gsettings_desktop_schemas_version 40~alpha
+%define gsettings_desktop_schemas_version 41~alpha
 %define ibus_version 1.5.2
 %define gnome_bluetooth_version 1:3.9.0
 %define gstreamer_version 1.4.5
@@ -192,6 +192,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_datadir}/applications/evolution-calendar.desktop
 %{_datadir}/applications/org.gnome.Shell.PortalHelper.desktop
 %{_datadir}/bash-completion/completions/gnome-extensions
+%{_datadir}/gnome-control-center/keybindings/50-gnome-shell-launchers.xml
 %{_datadir}/gnome-control-center/keybindings/50-gnome-shell-system.xml
 %{_datadir}/gnome-shell/
 %{_datadir}/dbus-1/services/org.gnome.ScreenSaver.service
@@ -225,15 +226,13 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_libexecdir}/gnome-shell-hotplug-sniffer
 %{_libexecdir}/gnome-shell-portal-helper
 %{_libexecdir}/gnome-shell-overrides-migration.sh
-# Co own these directories instead of pulling in GConf
-# after all, we are trying to get rid of GConf with these files
-%dir %{_datadir}/GConf
-%dir %{_datadir}/GConf/gsettings
-%{_datadir}/GConf/gsettings/gnome-shell-overrides.convert
 %{_mandir}/man1/gnome-extensions.1*
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Wed Aug 18 2021 Florian Müllner <fmuellner@redhat.com> - 41~beta
+- Update to 41.beta
+
 * Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 40.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
