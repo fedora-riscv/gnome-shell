@@ -1,13 +1,13 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        41~beta
+Version:        41~rc
 Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
 URL:            https://wiki.gnome.org/Projects/GnomeShell
-Source0: http://download.gnome.org/sources/gnome-shell/40/%{name}-%{tarball_version}.tar.xz
+Source0: http://download.gnome.org/sources/gnome-shell/41/%{name}-%{tarball_version}.tar.xz
 
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
@@ -21,10 +21,10 @@ Patch10005: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 %define gnome_desktop_version 3.35.91
 %define glib2_version 2.56.0
 %define gobject_introspection_version 1.49.1
-%define gjs_version 1.57.3
+%define gjs_version 1.69.2
 %define gtk3_version 3.15.0
 %define gtk4_version 4.0.0
-%define mutter_version 41~beta
+%define mutter_version 41~rc
 %define polkit_version 0.100
 %define gsettings_desktop_schemas_version 41~alpha
 %define ibus_version 1.5.2
@@ -230,7 +230,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
-* Wed Aug 18 2021 Florian Müllner <fmuellner@redhat.com> - 41~beta
+* Sun Sep 05 2021 Florian Müllner <fmuellner@redhat.com> - 41~rc-1
+- Update to 41.rc
+
+* Wed Aug 18 2021 Florian Müllner <fmuellner@redhat.com> - 41~beta-1
 - Update to 41.beta
 
 * Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 40.3-2
