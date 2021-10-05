@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        41.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -11,6 +11,10 @@ Source0: http://download.gnome.org/sources/gnome-shell/41/%{name}-%{tarball_vers
 
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch1: gnome-shell-favourite-apps-firefox.patch
+
+# Backported from upstream
+# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1993
+Patch2: 0001-inputMethod-Clear-preeditStr-before-reset.patch
 
 # Some users might have a broken PAM config, so we really need this
 # downstream patch to stop trying on configuration errors.
@@ -230,6 +234,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Tue Oct 05 2021 Kalev Lember <klember@redhat.com> - 41.0-2
+- Backport upstream patch to fix scrolling to incorrect positions
+
 * Sun Sep 19 2021 Florian Müllner <fmuellner@redhat.com> - 41.0-1
 - Update to 41.0
 
