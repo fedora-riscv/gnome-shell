@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        41.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -15,6 +15,11 @@ Patch1: gnome-shell-favourite-apps-firefox.patch
 # Backported from upstream
 # https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1993
 Patch2: 0001-inputMethod-Clear-preeditStr-before-reset.patch
+
+# Fix wrong OSD icons displaying after the first
+# https://bugzilla.redhat.com/show_bug.cgi?id=2011872
+# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1983
+Patch3: 0001-st-icon-Ensure-icons-are-updated-if-theme-node-is-in.patch
 
 # Some users might have a broken PAM config, so we really need this
 # downstream patch to stop trying on configuration errors.
@@ -234,6 +239,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Thu Oct 07 2021 Adam Williamson <awilliam@redhat.com> - 41.0-3
+- Backport MR #1983 to fix wrong OSD icons (#2011872)
+
 * Tue Oct 05 2021 Kalev Lember <klember@redhat.com> - 41.0-2
 - Backport upstream patch to fix scrolling to incorrect positions
 
