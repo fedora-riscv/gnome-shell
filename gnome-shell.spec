@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        41.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -10,20 +10,23 @@ URL:            https://wiki.gnome.org/Projects/GnomeShell
 Source0: http://download.gnome.org/sources/gnome-shell/41/%{name}-%{tarball_version}.tar.xz
 
 # Replace Epiphany with Firefox in the default favourite apps list
-Patch1: gnome-shell-favourite-apps-firefox.patch
+Patch10001: gnome-shell-favourite-apps-firefox.patch
 
 # Backported from upstream
 # https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1993
-Patch2: 0001-inputMethod-Clear-preeditStr-before-reset.patch
+Patch20001: 0001-inputMethod-Clear-preeditStr-before-reset.patch
 
 # Fix wrong OSD icons displaying after the first
 # https://bugzilla.redhat.com/show_bug.cgi?id=2011872
 # https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1983
-Patch3: 0001-st-icon-Ensure-icons-are-updated-if-theme-node-is-in.patch
+Patch30001: 0001-st-icon-Ensure-icons-are-updated-if-theme-node-is-in.patch
 
 # Some users might have a broken PAM config, so we really need this
 # downstream patch to stop trying on configuration errors.
-Patch10005: 0001-gdm-Work-around-failing-fingerprint-auth.patch
+Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
+
+# Fix crash if settings get updated after an entry is destroyed (#2009637)
+Patch50001: 0001-st-password-entry-Fix-crash-when-DConf-changes-after.patch
 
 
 %define eds_version 3.33.1
@@ -239,6 +242,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Tue Oct 12 2021 Ray Strode <rstrode@redhat.com> - 41.0-4
+- Fix StPasswordEntry crash
+  Resolves: #2009637
+
 * Thu Oct 07 2021 Adam Williamson <awilliam@redhat.com> - 41.0-3
 - Backport MR #1983 to fix wrong OSD icons (#2011872)
 
