@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        41.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -28,6 +28,10 @@ Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 # Fix crash if settings get updated after an entry is destroyed (#2009637)
 Patch50001: 0001-st-password-entry-Fix-crash-when-DConf-changes-after.patch
 
+# Fix problem where lock screen gets confused if you hit escape too fast too many times
+# when coming back from screen blank
+Patch60001: 0001-unlockDialog-Don-t-create-AuthDialog-just-to-finish-.patch
+Patch60002: 0002-unlockDialog-Properly-reset-auth-prompt-when-showing.patch
 
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
@@ -242,6 +246,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Tue Oct 26 2021 Ray Strode <rstrode@redhat.com> - 41.0-5
+- Fix unlock screen confusion when hitting escape too much
+
 * Tue Oct 12 2021 Ray Strode <rstrode@redhat.com> - 41.0-4
 - Fix StPasswordEntry crash
   Resolves: #2009637
