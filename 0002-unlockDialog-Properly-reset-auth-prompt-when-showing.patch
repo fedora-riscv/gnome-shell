@@ -1,4 +1,4 @@
-From e45d8817b4fc5fed35d3b39612f7993351b7c92c Mon Sep 17 00:00:00 2001
+From ceee53aa0a40f3bf81945fabb4ecdd70d11143a4 Mon Sep 17 00:00:00 2001
 From: Ray Strode <rstrode@redhat.com>
 Date: Tue, 5 Oct 2021 11:01:19 -0400
 Subject: [PATCH 2/2] unlockDialog: Properly reset auth prompt when showing it
@@ -15,15 +15,17 @@ of a cancel animation.
 
 This commit solves the problem by ensuring the auth prompt is always
 in a fresh reset state before showing it.
+
+Part-of: <https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1999>
 ---
- js/ui/unlockDialog.js | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ js/ui/unlockDialog.js | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
 diff --git a/js/ui/unlockDialog.js b/js/ui/unlockDialog.js
-index f4c76c41a..3e80c002a 100644
+index f4c76c41a..3ef6aa90f 100644
 --- a/js/ui/unlockDialog.js
 +++ b/js/ui/unlockDialog.js
-@@ -649,73 +649,73 @@ var UnlockDialog = GObject.registerClass({
+@@ -649,70 +649,68 @@ var UnlockDialog = GObject.registerClass({
      }
  
      _updateBackgroundEffects() {
@@ -73,12 +75,8 @@ index f4c76c41a..3e80c002a 100644
 +            this._promptBox.add_child(this._authPrompt);
 +        }
  
--        this._authPrompt.reset();
--        this._authPrompt.updateSensitivity(true);
-+        if (this._authPrompt.verificationStatus !== AuthPromptStatus.NOT_VERIFYING) {
-+            this._authPrompt.reset();
-+            this._authPrompt.updateSensitivity(true);
-+        }
+         this._authPrompt.reset();
+         this._authPrompt.updateSensitivity(true);
      }
  
      _maybeDestroyAuthPrompt() {
@@ -106,9 +104,6 @@ index f4c76c41a..3e80c002a 100644
              onComplete: () => this._maybeDestroyAuthPrompt(),
          });
      }
- 
-     _showPrompt() {
-         this._ensureAuthPrompt();
 -- 
-2.31.1
+2.32.0
 
