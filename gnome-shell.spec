@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        41.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -249,6 +249,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Wed Oct 27 2021 Ray Strode <rstrode@redhat.com> - 41.0-7
+- Use correct patch for fixing unlock screen confusion
+
 * Tue Oct 26 2021 Jonas Ådahl <jadahl@redhat.com> - 41.0-6
 - Work around crashy tear down
 
