@@ -1,0 +1,38 @@
+From 047691b0d3471630ec80e32f371291dd2ef02419 Mon Sep 17 00:00:00 2001
+From: Carlos Garnacho <carlosg@gnome.org>
+Date: Fri, 29 Oct 2021 16:43:15 +0200
+Subject: [PATCH 2/3] inputMethod: Do not communicate preedit text change on
+ reset
+
+This is now done in the ClutterInputFocus for us, since
+https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/1940. There
+is no need to duplicate this call, and it happens to cause undesired
+scrolling to content in some cases when this reset happens during
+a change in the IM focused client state.
+
+Fixes: https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/4647
+Part-of: <https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/2011>
+---
+ js/misc/inputMethod.js | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/js/misc/inputMethod.js b/js/misc/inputMethod.js
+index 7de7540d3..71dff84f5 100644
+--- a/js/misc/inputMethod.js
++++ b/js/misc/inputMethod.js
+@@ -186,11 +186,7 @@ class InputMethod extends Clutter.InputMethod {
+             this._emitRequestSurrounding();
+         }
+ 
+-        if (this._preeditStr !== null) {
+-            // Unset any preedit text
+-            this.set_preedit_text(null, 0, Clutter.PreeditResetMode.CLEAR);
+-            this._preeditStr = null;
+-        }
++        this._preeditStr = null;
+     }
+ 
+     vfunc_set_cursor_location(rect) {
+-- 
+2.33.1
+
