@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        41.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -35,6 +35,15 @@ Patch60002: 0002-unlockDialog-Properly-reset-auth-prompt-when-showing.patch
 
 # Work around crashy tear down
 Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
+
+# More fixes for cursor bouncing around in text editors
+# https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/4647
+# https://bugzilla.redhat.com/show_bug.cgi?id=2017192
+# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/2011
+Patch70001: 0001-inputMethod-Equate-empty-preedit-string-to-null.patch
+Patch70002: 0002-inputMethod-Do-not-communicate-preedit-text-change-o.patch
+Patch70003: 0003-inputMethod-Do-not-reset-invisible-preedit-on-focus_.patch
+
 
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
@@ -249,6 +258,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Fri Oct 29 2021 Adam Williamson <awilliam@redhat.com> - 41.0-8
+- Backport MR #2011 to further fix unexpected scrolling (#2017192)
+
 * Wed Oct 27 2021 Ray Strode <rstrode@redhat.com> - 41.0-7
 - Use correct patch for fixing unlock screen confusion
 
