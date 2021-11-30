@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        40.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -182,7 +182,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %files -f %{name}.lang
 %license COPYING
 %doc README.md
-%caps(cap_sys_nice+ep) %{_bindir}/gnome-shell
+%{_bindir}/gnome-shell
 %{_bindir}/gnome-extensions
 %{_bindir}/gnome-shell-extension-prefs
 %{_bindir}/gnome-shell-extension-tool
@@ -236,6 +236,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Tue Nov 30 2021 Florian Müllner <fmuellner@redhat.com> - 40.6-2
+- Drop extra capabilities from gnome-shell. They're optional and they break shutdown from the login screen with new glibs.
+  Resolves: #2026996
+
 * Thu Nov 04 2021 Florian Müllner <fmuellner@redhat.com> - 40.6-1
 - Update to 40.6
 
