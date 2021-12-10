@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        41.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -19,6 +19,8 @@ Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 # Work around crashy tear down
 Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 
+# Patches that landed upstream after 41.1
+Patch70001: patches-atfer-41.1.patch
 
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
@@ -233,6 +235,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Fri Dec 10 2021 Jonas Ådahl <jadahl@redhat.com> - 41.1-2
+- Backport patches after 41.1
+
 * Thu Nov 04 2021 Florian Müllner <fmuellner@redhat.com> - 41.1-1
 - Update to 41.1
 
