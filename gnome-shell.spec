@@ -19,9 +19,6 @@ Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 # Work around crashy tear down
 Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 
-# Patches that landed upstream after 41.1
-Patch70001: patches-atfer-41.1.patch
-
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
 %define glib2_version 2.56.0
