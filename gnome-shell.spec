@@ -1,8 +1,8 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        40.6
-Release:        2%{?dist}
+Version:        40.7
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -236,6 +236,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Sun Dec 12 2021 Florian Müllner <fmuellner@redhat.com> - 40.7-1
+- Update to 40.7
+
 * Tue Nov 30 2021 Florian Müllner <fmuellner@redhat.com> - 40.6-2
 - Drop extra capabilities from gnome-shell. They're optional and they break shutdown from the login screen with new glibs.
   Resolves: #2026996
