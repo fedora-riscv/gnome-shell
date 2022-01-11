@@ -1,7 +1,7 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        40.7
+Version:        40.8
 Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
@@ -236,6 +236,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Tue Jan 11 2022 Florian Müllner <fmuellner@redhat.com> - 40.8-1
+- Update to 40.8
+
 * Sun Dec 12 2021 Florian Müllner <fmuellner@redhat.com> - 40.7-1
 - Update to 40.7
 
