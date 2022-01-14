@@ -1,49 +1,23 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        41.0
-Release:        8%{?dist}
+Version:        42~alpha
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
 URL:            https://wiki.gnome.org/Projects/GnomeShell
-Source0: http://download.gnome.org/sources/gnome-shell/41/%{name}-%{tarball_version}.tar.xz
+Source0:        https://download.gnome.org/sources/gnome-shell/42/%{name}-%{tarball_version}.tar.xz
 
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch10001: gnome-shell-favourite-apps-firefox.patch
-
-# Backported from upstream
-# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1993
-Patch20001: 0001-inputMethod-Clear-preeditStr-before-reset.patch
-
-# Fix wrong OSD icons displaying after the first
-# https://bugzilla.redhat.com/show_bug.cgi?id=2011872
-# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1983
-Patch30001: 0001-st-icon-Ensure-icons-are-updated-if-theme-node-is-in.patch
 
 # Some users might have a broken PAM config, so we really need this
 # downstream patch to stop trying on configuration errors.
 Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 
-# Fix crash if settings get updated after an entry is destroyed (#2009637)
-Patch50001: 0001-st-password-entry-Fix-crash-when-DConf-changes-after.patch
-
-# Fix problem where lock screen gets confused if you hit escape too fast too many times
-# when coming back from screen blank
-Patch60001: 0001-unlockDialog-Don-t-create-AuthDialog-just-to-finish-.patch
-Patch60002: 0002-unlockDialog-Properly-reset-auth-prompt-when-showing.patch
-
 # Work around crashy tear down
 Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
-
-# More fixes for cursor bouncing around in text editors
-# https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/4647
-# https://bugzilla.redhat.com/show_bug.cgi?id=2017192
-# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/2011
-Patch70001: 0001-inputMethod-Equate-empty-preedit-string-to-null.patch
-Patch70002: 0002-inputMethod-Do-not-communicate-preedit-text-change-o.patch
-Patch70003: 0003-inputMethod-Do-not-reset-invisible-preedit-on-focus_.patch
-
 
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
@@ -149,7 +123,7 @@ Requires:       python3%{_isa}
 Requires:       switcheroo-control
 # needed for clocks/weather integration
 Requires:       geoclue2-libs%{?_isa}
-Requires:       libgweather%{?_isa} >= %{libgweather_version}
+Requires:       libgweather4%{?_isa} >= %{libgweather_version}
 # needed for thunderbolt support
 Requires:       bolt%{?_isa}
 # Needed for launching flatpak apps etc
@@ -258,6 +232,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Fri Jan 14 2022 David King <amigadave@amigadave.com> - 42~alpha-1
+- Update to 42.alpha
+
 * Fri Oct 29 2021 Adam Williamson <awilliam@redhat.com> - 41.0-8
 - Backport MR #2011 to further fix unexpected scrolling (#2017192)
 
