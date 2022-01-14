@@ -40,29 +40,27 @@ BuildRequires:  bash-completion
 BuildRequires:  gcc
 BuildRequires:  meson
 BuildRequires:  git
-BuildRequires:  ibus-devel >= %{ibus_version}
-BuildRequires:  chrpath
+BuildRequires:  pkgconfig(ibus-1.0) >= %{ibus_version}
 BuildRequires:  desktop-file-utils
-BuildRequires:  evolution-data-server-devel >= %{eds_version}
-BuildRequires:  gcr-devel
-BuildRequires:  gjs-devel >= %{gjs_version}
-BuildRequires:  glib2-devel >= %{glib2_version}
-BuildRequires:  gnome-autoar-devel
+BuildRequires:  pkgconfig(libedataserver-1.2) >= %{eds_version}
+BuildRequires:  pkgconfig(gcr-base-3)
+BuildRequires:  pkgconfig(gjs-1.0) >= %{gjs_version}
+BuildRequires:  pkgconfig(gio-2.0) >= %{glib2_version}
+BuildRequires:  pkgconfig(gnome-autoar-0)
 BuildRequires:  pkgconfig(gnome-desktop-3.0)
-BuildRequires:  gobject-introspection >= %{gobject_introspection_version}
+BuildRequires:  pkgconfig(gobject-introspection-1.0) >= %{gobject_introspection_version}
 BuildRequires:  mesa-libGL-devel
 BuildRequires:  mesa-libEGL-devel
-BuildRequires:  NetworkManager-libnm-devel
-BuildRequires:  polkit-devel >= %{polkit_version}
-BuildRequires:  startup-notification-devel
-BuildRequires:  systemd-devel
+BuildRequires:  pkgconfig(libnm)
+BuildRequires:  pkgconfig(polkit-agent-1) >= %{polkit_version}
+BuildRequires:  pkgconfig(libstartup-notification-1.0)
+BuildRequires:  pkgconfig(libsystemd)
 # for screencast recorder functionality
-BuildRequires:  gstreamer1-devel >= %{gstreamer_version}
+BuildRequires:  pkgconfig(gstreamer-base-1.0) >= %{gstreamer_version}
 BuildRequires:  pkgconfig(libpipewire-0.3) >= %{pipewire_version}
-BuildRequires:  gtk3-devel >= %{gtk3_version}
-BuildRequires:  gtk4-devel >= %{gtk4_version}
+BuildRequires:  pkgconfig(gdk-x11-3.0) >= %{gtk3_version}
+BuildRequires:  pkgconfig(gtk4) >= %{gtk4_version}
 BuildRequires:  gettext >= 0.19.6
-BuildRequires:  libcanberra-devel
 BuildRequires:  python3
 
 # for barriers
@@ -70,7 +68,7 @@ BuildRequires:  libXfixes-devel >= 5.0
 # used in unused BigThemeImage
 BuildRequires:  librsvg2-devel
 BuildRequires:  mutter-devel >= %{mutter_version}
-BuildRequires:  pulseaudio-libs-devel
+BuildRequires:  pkgconfig(libpulse)
 %ifnarch s390 s390x ppc ppc64 ppc64p7
 BuildRequires:  gnome-bluetooth-libs-devel >= %{gnome_bluetooth_version}
 %endif
@@ -234,6 +232,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %changelog
 * Fri Jan 14 2022 David King <amigadave@amigadave.com> - 42~alpha-1
 - Update to 42.alpha
+- Use pkgconfig for BuildRequires
 
 * Fri Oct 29 2021 Adam Williamson <awilliam@redhat.com> - 41.0-8
 - Backport MR #2011 to further fix unexpected scrolling (#2017192)
