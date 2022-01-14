@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        42~alpha
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -34,7 +34,6 @@ Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 %define gstreamer_version 1.4.5
 %define pipewire_version 0.3.0
 %define gnome_settings_daemon_version 3.37.1
-%define libgweather_version 40~alpha
 
 BuildRequires:  bash-completion
 BuildRequires:  gcc
@@ -121,7 +120,7 @@ Requires:       python3%{_isa}
 Requires:       switcheroo-control
 # needed for clocks/weather integration
 Requires:       geoclue2-libs%{?_isa}
-Requires:       libgweather4%{?_isa} >= %{libgweather_version}
+Requires:       libgweather4%{?_isa}
 # needed for thunderbolt support
 Requires:       bolt%{?_isa}
 # Needed for launching flatpak apps etc
@@ -230,6 +229,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Fri Jan 14 2022 David King <amigadave@amigadave.com> - 42~alpha-2
+- Fix gweather4 dependency
+
 * Fri Jan 14 2022 David King <amigadave@amigadave.com> - 42~alpha-1
 - Update to 42.alpha
 - Use pkgconfig for BuildRequires
