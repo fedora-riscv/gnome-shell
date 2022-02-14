@@ -1,8 +1,8 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        42~alpha
-Release:        3%{?dist}
+Version:        42~beta
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -26,6 +26,7 @@ Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 %define gjs_version 1.69.2
 %define gtk3_version 3.15.0
 %define gtk4_version 4.0.0
+%define adwaita_version 1.0.0
 %define mutter_version 41.0
 %define polkit_version 0.100
 %define gsettings_desktop_schemas_version 41~alpha
@@ -87,6 +88,7 @@ Requires:       gobject-introspection%{?_isa} >= %{gobject_introspection_version
 Requires:       gjs%{?_isa} >= %{gjs_version}
 Requires:       gtk3%{?_isa} >= %{gtk3_version}
 Requires:       gtk4%{?_isa} >= %{gtk4_version}
+Requires:       libadwaita%{_isa} >= %{adwaita_version}
 Requires:       highcontrast-icon-theme
 Requires:       libnma%{?_isa}
 # needed for loading SVG's via gdk-pixbuf
@@ -192,6 +194,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_datadir}/applications/org.gnome.Shell.PortalHelper.desktop
 %{_datadir}/bash-completion/completions/gnome-extensions
 %{_datadir}/gnome-control-center/keybindings/50-gnome-shell-launchers.xml
+%{_datadir}/gnome-control-center/keybindings/50-gnome-shell-screenshots.xml
 %{_datadir}/gnome-control-center/keybindings/50-gnome-shell-system.xml
 %{_datadir}/gnome-shell/
 %{_datadir}/dbus-1/services/org.gnome.ScreenSaver.service
@@ -229,6 +232,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Tue Feb 15 2022 Florian Müllner <fmuellner@redhat.com> - 42~beta-1
+- Update to 42.beta
+
 * Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 42~alpha-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
