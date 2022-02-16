@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        42~beta
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -23,13 +23,13 @@ Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 %define gnome_desktop_version 3.35.91
 %define glib2_version 2.56.0
 %define gobject_introspection_version 1.49.1
-%define gjs_version 1.69.2
+%define gjs_version 1.71.1
 %define gtk3_version 3.15.0
 %define gtk4_version 4.0.0
 %define adwaita_version 1.0.0
-%define mutter_version 41.0
+%define mutter_version 42~beta
 %define polkit_version 0.100
-%define gsettings_desktop_schemas_version 41~alpha
+%define gsettings_desktop_schemas_version 42~beta
 %define ibus_version 1.5.2
 %define gnome_bluetooth_version 1:3.9.0
 %define gstreamer_version 1.4.5
@@ -115,7 +115,7 @@ Requires:       libgnomekbd
 Requires:       accountsservice-libs%{?_isa}
 Requires:       gdm-libs%{?_isa}
 # needed for settings items in menus
-Requires:       control-center
+Requires:       gnome-control-center
 # needed by some utilities
 Requires:       python3%{_isa}
 # needed for the dual-GPU launch menu
@@ -232,6 +232,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Wed Feb 16 2022 David King <amigadave@amigadave.com> - 42~beta-2
+- Update some dependency versions
+
 * Tue Feb 15 2022 Florian Müllner <fmuellner@redhat.com> - 42~beta-1
 - Update to 42.beta
 
