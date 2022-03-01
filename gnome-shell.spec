@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        42~beta
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -244,6 +244,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Tue Mar 01 2022 Adam Williamson <awilliam@redhat.com> - 42~beta-4
+- Update the MR #2185 backport
+
 * Tue Mar 01 2022 Adam Williamson <awilliam@redhat.com> - 42~beta-3
 - Backport MR #2185 to fix some styling issues at lower resolutions
 

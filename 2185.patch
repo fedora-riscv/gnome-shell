@@ -162,16 +162,66 @@ index 4ad3f08217..644c53db58 100644
 GitLab
 
 
-From fd63ee148a2230192d654f5718b4b205f8bc230e Mon Sep 17 00:00:00 2001
+From 8a2d33ea4306d35e39d8eb49c276343618ee1d5d Mon Sep 17 00:00:00 2001
 From: Sam Hewitt <sam@snwh.org>
 Date: Tue, 15 Feb 2022 12:30:51 -0330
 Subject: [PATCH 2/2] theme: Fixes to regressions in app grid
 
 ---
+ data/theme/gnome-shell-sass/_common.scss        |  1 +
+ data/theme/gnome-shell-sass/_drawing.scss       | 17 ++++++++++-------
  .../gnome-shell-sass/widgets/_app-grid.scss     | 17 ++++++-----------
  data/theme/gnome-shell-sass/widgets/_dash.scss  | 10 ++++++++--
- 2 files changed, 14 insertions(+), 13 deletions(-)
+ .../widgets/_switcher-popup.scss                |  1 -
+ 5 files changed, 25 insertions(+), 21 deletions(-)
 
+diff --git a/data/theme/gnome-shell-sass/_common.scss b/data/theme/gnome-shell-sass/_common.scss
+index f86de2053c..af6a05f2bb 100644
+--- a/data/theme/gnome-shell-sass/_common.scss
++++ b/data/theme/gnome-shell-sass/_common.scss
+@@ -84,6 +84,7 @@ stage {
+ %tile {
+   border-radius: $base_border_radius * 2; // 16px
+   padding: $base_padding;
++  spacing: $base_padding;
+   border: 2px solid transparent;
+   transition-duration: 100ms;
+   text-align: center;
+diff --git a/data/theme/gnome-shell-sass/_drawing.scss b/data/theme/gnome-shell-sass/_drawing.scss
+index 10c1c3f3fc..1cd7e9a8f5 100644
+--- a/data/theme/gnome-shell-sass/_drawing.scss
++++ b/data/theme/gnome-shell-sass/_drawing.scss
+@@ -239,10 +239,12 @@ $button_bg_color: mix($tc, $c, 5%);
+     background-color: transparentize($color, .84);
+   }
+   &:hover { background-color: transparentize($color, .9);}
+-  &:selected, &:focus {
+-    background-color: transparentize($color, .87);
+-    &:hover { background-color: transparentize($color, .84);}
+-    &:active { background-color: transparentize($color, .87);}
++  &:selected,
++  &:focus {
++    background-color: mix(transparentize($selected_bg_color, 0.5), transparentize($color, .87), 50%);
++    border-color: transparentize($selected_bg_color, 0.5);
++    &:hover { background-color: mix(transparentize($selected_bg_color, 0.5), transparentize($color, .84), 50%);}
++    &:active { background-color: mix(transparentize($selected_bg_color, 0.5), transparentize($color, .87), 50%);}
+   }
+   &:active { background-color: transparentize($color, .84);}
+   &:outlined, &:checked {
+@@ -268,9 +270,10 @@ $button_bg_color: mix($tc, $c, 5%);
+ 
+   &:selected .overview-icon,
+   &:focus .overview-icon {
+-    background-color: transparentize($color, .87);
+-    &:hover .overview-icon { background-color: transparentize($color, .84);}
+-    &:active .overview-icon { background-color: transparentize($color, .87);}
++    background-color: mix(transparentize($selected_bg_color, 0.5), transparentize($color, .87), 50%);
++    border-color: transparentize($selected_bg_color, 0.5);
++    &:hover .overview-icon { background-color: mix(transparentize($selected_bg_color, 0.5), transparentize($color, .84), 50%);}
++    &:active .overview-icon { background-color: mix(transparentize($selected_bg_color, 0.5), transparentize($color, .87), 50%);}
+   }
+   &:active .overview-icon { background-color: transparentize($color, .84);}
+   &:outlined .overview-icon,
 diff --git a/data/theme/gnome-shell-sass/widgets/_app-grid.scss b/data/theme/gnome-shell-sass/widgets/_app-grid.scss
 index 25e29ef648..c936e4b6d4 100644
 --- a/data/theme/gnome-shell-sass/widgets/_app-grid.scss
@@ -272,6 +322,18 @@ index 25755e73d7..8f5d5f939b 100644
  }
  
  // OSD Tooltip
+diff --git a/data/theme/gnome-shell-sass/widgets/_switcher-popup.scss b/data/theme/gnome-shell-sass/widgets/_switcher-popup.scss
+index 892d3351d5..1b03c9d050 100644
+--- a/data/theme/gnome-shell-sass/widgets/_switcher-popup.scss
++++ b/data/theme/gnome-shell-sass/widgets/_switcher-popup.scss
+@@ -25,7 +25,6 @@ $switcher_border_radius: $modal_radius + 8px;
+ 
+   // each item in the list
+   .item-box {
+-
+     @include tile_button($osd_fg_color);
+   }
+ 
 -- 
 GitLab
 
