@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        42~beta
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -18,6 +18,10 @@ Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 
 # Work around crashy tear down
 Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
+
+# Fix a bunch of stylesheet issues in overview and dash
+# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/2185
+Patch70001: 2185.patch
 
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
@@ -35,6 +39,10 @@ Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 %define gstreamer_version 1.4.5
 %define pipewire_version 0.3.0
 %define gnome_settings_daemon_version 3.37.1
+
+# ONLY for 2185.patch requiring CSS rebuild drop, when patch is
+# merged
+BuildRequires:  sassc
 
 BuildRequires:  bash-completion
 BuildRequires:  gcc
@@ -160,6 +168,10 @@ easy to use experience.
 
 %prep
 %autosetup -S git -n %{name}-%{tarball_version}
+# remove pre-generated CSS files to force them to be rebuilt with
+# 2185.patch changes, remove this when 2185.patch is merged
+rm -f data/theme/gnome-shell-high-contrast.css
+rm -f data/theme/gnome-shell.css
 
 %build
 %meson -Dextensions_app=false
@@ -232,6 +244,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Tue Mar 01 2022 Adam Williamson <awilliam@redhat.com> - 42~beta-3
+- Backport MR #2185 to fix some styling issues at lower resolutions
+
 * Wed Feb 16 2022 David King <amigadave@amigadave.com> - 42~beta-2
 - Update some dependency versions
 
