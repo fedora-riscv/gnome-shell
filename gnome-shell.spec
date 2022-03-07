@@ -1,8 +1,8 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        42~beta
-Release:        4%{?dist}
+Version:        42~rc
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -19,10 +19,6 @@ Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 # Work around crashy tear down
 Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 
-# Fix a bunch of stylesheet issues in overview and dash
-# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/2185
-Patch70001: 2185.patch
-
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
 %define glib2_version 2.56.0
@@ -31,7 +27,7 @@ Patch70001: 2185.patch
 %define gtk3_version 3.15.0
 %define gtk4_version 4.0.0
 %define adwaita_version 1.0.0
-%define mutter_version 42~beta
+%define mutter_version 42~rc
 %define polkit_version 0.100
 %define gsettings_desktop_schemas_version 42~beta
 %define ibus_version 1.5.2
@@ -39,10 +35,6 @@ Patch70001: 2185.patch
 %define gstreamer_version 1.4.5
 %define pipewire_version 0.3.0
 %define gnome_settings_daemon_version 3.37.1
-
-# ONLY for 2185.patch requiring CSS rebuild drop, when patch is
-# merged
-BuildRequires:  sassc
 
 BuildRequires:  bash-completion
 BuildRequires:  gcc
@@ -168,10 +160,6 @@ easy to use experience.
 
 %prep
 %autosetup -S git -n %{name}-%{tarball_version}
-# remove pre-generated CSS files to force them to be rebuilt with
-# 2185.patch changes, remove this when 2185.patch is merged
-rm -f data/theme/gnome-shell-high-contrast.css
-rm -f data/theme/gnome-shell.css
 
 %build
 %meson -Dextensions_app=false
@@ -244,6 +232,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Mon Mar 07 2022 Florian Müllner <fmuellner@redhat.com> - 42~rc-1
+- Update to 42.rc
+
 * Tue Mar 01 2022 Adam Williamson <awilliam@redhat.com> - 42~beta-4
 - Update the MR #2185 backport
 
