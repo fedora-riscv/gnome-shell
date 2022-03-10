@@ -1,0 +1,29 @@
+From 928f6dcdf28510bb60b0da43b511db209b089670 Mon Sep 17 00:00:00 2001
+From: Adam Williamson <awilliam@redhat.com>
+Date: Wed, 9 Mar 2022 18:13:40 -0800
+Subject: [PATCH 2/2] appDisplay: fix a typo in the DEFAULT_FOLDERS definition
+
+This causes a crash because when we look for 'categories' later
+for this entry, it's undefined.
+
+Signed-off-by: Adam Williamson <awilliam@redhat.com>
+---
+ js/ui/appDisplay.js | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/js/ui/appDisplay.js b/js/ui/appDisplay.js
+index 821bfe3b8..116e9931d 100644
+--- a/js/ui/appDisplay.js
++++ b/js/ui/appDisplay.js
+@@ -79,7 +79,7 @@ const DEFAULT_FOLDERS = {
+     },
+     'YaST': {
+         name: 'suse-yast.directory',
+-        categegories: ['X-SuSE-YaST'],
++        categories: ['X-SuSE-YaST'],
+     },
+ };
+ 
+-- 
+2.35.1
+
