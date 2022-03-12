@@ -1,8 +1,8 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        42~rc
-Release:        2%{?dist}
+Version:        42.0
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -19,12 +19,6 @@ Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 # Work around crashy tear down
 Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 
-# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/2238
-# Fix a couple of bugs that caused gnome-shell to crash on first
-# login with a new user
-Patch80001: 0001-appDisplay-fix-folder-loop-in-_ensureDefaultFolders.patch
-Patch80002: 0002-appDisplay-fix-a-typo-in-the-DEFAULT_FOLDERS-definit.patch
-
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
 %define glib2_version 2.56.0
@@ -33,7 +27,7 @@ Patch80002: 0002-appDisplay-fix-a-typo-in-the-DEFAULT_FOLDERS-definit.patch
 %define gtk3_version 3.15.0
 %define gtk4_version 4.0.0
 %define adwaita_version 1.0.0
-%define mutter_version 42~rc
+%define mutter_version 42.0
 %define polkit_version 0.100
 %define gsettings_desktop_schemas_version 42~beta
 %define ibus_version 1.5.2
@@ -238,6 +232,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Sun Mar 13 2022 Florian Müllner <fmuellner@redhat.com> - 42.0-1
+- Update to 42.0
+
 * Wed Mar 09 2022 Adam Williamson <awilliam@redhat.com> - 42~rc-2
 - Backport MR #2238 to fix crashes on first login
 
