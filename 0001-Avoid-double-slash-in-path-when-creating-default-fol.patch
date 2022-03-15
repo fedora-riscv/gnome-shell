@@ -1,0 +1,40 @@
+From 4016f8373d9e1251e76833054598e29c882becaf Mon Sep 17 00:00:00 2001
+From: Adam Williamson <awilliam@redhat.com>
+Date: Tue, 15 Mar 2022 13:25:16 -0700
+Subject: [PATCH] Avoid double slash in path when creating default folders
+
+Creating these default folders still doesn't work. After some
+investigation I found that's because the template we use for
+the path when creating the `child` `Gio.Settings` instance
+results in a double slash - it comes out as e.g.
+/org/gnome/desktop/app-folders//folders/Utilities/ . dconf does
+not gracefully handle this as many other things that handle
+paths do, it considers it a programmer error. It results in
+error messages like:
+
+dconf_changeset_set: assertion 'dconf_is_path (path, NULL)' failed
+
+which is slightly confusing. Anyway, we fix it by removing a
+slash from the template.
+
+Signed-off-by: Adam Williamson <awilliam@redhat.com>
+---
+ js/ui/appDisplay.js | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/js/ui/appDisplay.js b/js/ui/appDisplay.js
+index 116e9931d..4fa2a5f63 100644
+--- a/js/ui/appDisplay.js
++++ b/js/ui/appDisplay.js
+@@ -1471,7 +1471,7 @@ class AppDisplay extends BaseAppView {
+             const { name, categories, apps } = DEFAULT_FOLDERS[folder];
+             const child = new Gio.Settings({
+                 schema_id: 'org.gnome.desktop.app-folders.folder',
+-                path: `${path}/folders/${folder}/`,
++                path: `${path}folders/${folder}/`,
+             });
+             child.set_string('name', name);
+             child.set_boolean('translate', true);
+-- 
+2.35.1
+

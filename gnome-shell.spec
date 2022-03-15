@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        42~rc
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -24,6 +24,12 @@ Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 # login with a new user
 Patch80001: 0001-appDisplay-fix-folder-loop-in-_ensureDefaultFolders.patch
 Patch80002: 0002-appDisplay-fix-a-typo-in-the-DEFAULT_FOLDERS-definit.patch
+
+# Fix default folder creation
+# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/2242
+# https://bugzilla.redhat.com/show_bug.cgi?id=2064473
+Patch90001: 0001-Avoid-double-slash-in-path-when-creating-default-fol.patch
+
 
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
@@ -238,6 +244,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Tue Mar 15 2022 Adam Williamson <awilliam@redhat.com> - 42~rc-3
+- Backport MR #2242 to fix new user default folder creation (#2064473)
+
 * Wed Mar 09 2022 Adam Williamson <awilliam@redhat.com> - 42~rc-2
 - Backport MR #2238 to fix crashes on first login
 
