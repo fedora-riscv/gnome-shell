@@ -1,8 +1,8 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        42.0
-Release:        3%{?dist}
+Version:        42.1
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -18,18 +18,6 @@ Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 
 # Work around crashy tear down
 Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
-
-# Fix default folder creation
-# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/2242
-# https://bugzilla.redhat.com/show_bug.cgi?id=2064473
-Patch80001: 0001-Avoid-double-slash-in-path-when-creating-default-fol.patch
-
-# Fix <super>p handling
-# https://bugzilla.redhat.com/show_bug.cgi?id=2073406
-Patch80002: 0001-switchMonitor-Fix-switching-configuration.patch
-# Fix stuck cover pane
-# https://bugzilla.redhat.com/show_bug.cgi?id=2063156
-Patch80003: fix-stuck-cover-pane.patch
 
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
@@ -244,6 +232,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Fri May 06 2022 Florian Müllner <fmuellner@redhat.com> - 42.1-1
+- Update to 42.1
+
 * Mon Apr 18 2022 Florian Müllner <fmuellner@redhat.com> - 42.0-3
 - Fix monitor config switches with <super>p (#2073406)
 - Fix stuck cover pane after startup animation (#2063156)
