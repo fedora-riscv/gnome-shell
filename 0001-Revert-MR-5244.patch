@@ -1,0 +1,41 @@
+From 6ffaa37bb7bf4632e1f0cec0a2ed323953d1b5c2 Mon Sep 17 00:00:00 2001
+From: Adam Williamson <awilliam@redhat.com>
+Date: Wed, 30 Mar 2022 12:38:45 -0700
+Subject: [PATCH] Revert MR #5244
+
+This reverts the commits from MR #5244, which are suspected of
+causing launcher icons in the overview to shrink at lower
+resolutions.
+---
+ js/ui/dash.js             | 1 -
+ js/ui/overviewControls.js | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/js/ui/dash.js b/js/ui/dash.js
+index f35cc2e25..0f1ca2c4c 100644
+--- a/js/ui/dash.js
++++ b/js/ui/dash.js
+@@ -610,7 +610,6 @@ var Dash = GObject.registerClass({
+                        (iconChildren.length - 1) * spacing;
+ 
+         let availHeight = this._maxHeight;
+-        availHeight -= this.margin_top + this.margin_bottom;
+         availHeight -= this._background.get_theme_node().get_vertical_padding();
+         availHeight -= themeNode.get_vertical_padding();
+         availHeight -= buttonHeight - iconHeight;
+diff --git a/js/ui/overviewControls.js b/js/ui/overviewControls.js
+index d3df21ea0..2344ad8eb 100644
+--- a/js/ui/overviewControls.js
++++ b/js/ui/overviewControls.js
+@@ -842,7 +842,7 @@ class ControlsManager extends St.Widget {
+ 
+         // The Dash rises from the bottom. This is the last animation to finish,
+         // so run the callback there.
+-        this.dash.translation_y = this.dash.height + this.dash.margin_bottom;
++        this.dash.translation_y = this.dash.height;
+         this.dash.ease({
+             translation_y: 0,
+             delay: STARTUP_ANIMATION_TIME,
+-- 
+2.35.1
+

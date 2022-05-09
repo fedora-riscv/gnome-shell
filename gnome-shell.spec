@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        41.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -18,6 +18,9 @@ Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 
 # Work around crashy tear down
 Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
+
+# Revert some patches to fix overview launcher icon size
+Patch80001: 0001-Revert-MR-5244.patch
 
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
@@ -232,6 +235,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Mon May 09 2022 Adam Williamson <awilliam@redhat.com> - 41.6-2
+- Revert MR #5244 to fix overview launcher icon sizes
+
 * Fri May 06 2022 Florian Müllner <fmuellner@redhat.com> - 41.6-1
 - Update to 41.6
 
