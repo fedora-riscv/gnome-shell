@@ -1,8 +1,8 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        41.6
-Release:        2%{?dist}
+Version:        41.7
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -235,6 +235,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Sat May 28 2022 Florian Müllner <fmuellner@redhat.com> - 41.7-1
+- Update to 41.7
+
 * Mon May 09 2022 Adam Williamson <awilliam@redhat.com> - 41.6-2
 - Revert MR #5244 to fix overview launcher icon sizes
 
