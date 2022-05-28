@@ -22,6 +22,9 @@ Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 # Revert some patches to fix overview launcher icon size
 Patch80001: 0001-Revert-MR-5244.patch
 
+# Needed after meson update
+Patch90001: 0001-build-Drop-incorrect-positional-arg.patch
+
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
 %define glib2_version 2.56.0
