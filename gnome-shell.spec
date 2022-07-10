@@ -1,7 +1,7 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        42.2
+Version:        43~alpha
 Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
@@ -27,7 +27,7 @@ Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 %define gtk3_version 3.15.0
 %define gtk4_version 4.0.0
 %define adwaita_version 1.0.0
-%define mutter_version 42.0
+%define mutter_version 43~alpha
 %define polkit_version 0.100
 %define gsettings_desktop_schemas_version 42~beta
 %define ibus_version 1.5.2
@@ -232,6 +232,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Sun Jul 10 2022 Florian Müllner <fmuellner@redhat.com> - 43~alpha-1
+- Update to 43.alpha
+
 * Sat May 28 2022 Florian Müllner <fmuellner@redhat.com> - 42.2-1
 - Update to 42.2
 
