@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        43~alpha
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -19,7 +19,7 @@ Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 # Work around crashy tear down
 Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 
-%define eds_version 3.33.1
+%define eds_version 3.45.1
 %define gnome_desktop_version 3.35.91
 %define glib2_version 2.56.0
 %define gobject_introspection_version 1.49.1
@@ -232,6 +232,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Tue Jul 19 2022 Milan Crha <mcrha@redhat.com> - 43~alpha-2
+- Rebuilt for evolution-data-server soname version bump
+
 * Sun Jul 10 2022 Florian Müllner <fmuellner@redhat.com> - 43~alpha-1
 - Update to 43.alpha
 
