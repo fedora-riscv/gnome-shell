@@ -19,6 +19,8 @@ Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 # Work around crashy tear down
 Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 
+Patch01: 0001-build-Port-to-gcr4.patch
+
 %define eds_version 3.45.1
 %define gnome_desktop_version 3.35.91
 %define glib2_version 2.56.0
@@ -43,7 +45,7 @@ BuildRequires:  git
 BuildRequires:  pkgconfig(ibus-1.0) >= %{ibus_version}
 BuildRequires:  desktop-file-utils
 BuildRequires:  pkgconfig(libedataserver-1.2) >= %{eds_version}
-BuildRequires:  pkgconfig(gcr-base-3)
+BuildRequires:  pkgconfig(gcr-4)
 BuildRequires:  pkgconfig(gjs-1.0) >= %{gjs_version}
 BuildRequires:  pkgconfig(gio-2.0) >= %{glib2_version}
 BuildRequires:  pkgconfig(gnome-autoar-0)
@@ -234,6 +236,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %changelog
 * Tue Jul 19 2022 Milan Crha <mcrha@redhat.com> - 43~alpha-2
 - Rebuilt for evolution-data-server soname version bump
+- Add patch to port to gcr4
 
 * Sun Jul 10 2022 Florian Müllner <fmuellner@redhat.com> - 43~alpha-1
 - Update to 43.alpha
