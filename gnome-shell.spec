@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        43~alpha
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -234,6 +234,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Thu Jul 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 43~alpha-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
 * Tue Jul 19 2022 Milan Crha <mcrha@redhat.com> - 43~alpha-2
 - Rebuilt for evolution-data-server soname version bump
 - Add patch to port to gcr4
