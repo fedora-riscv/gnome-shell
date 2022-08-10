@@ -1,8 +1,8 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        43~alpha
-Release:        3%{?dist}
+Version:        43~beta
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -19,8 +19,6 @@ Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 # Work around crashy tear down
 Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 
-Patch01: 0001-build-Port-to-gcr4.patch
-
 %define eds_version 3.45.1
 %define gnome_desktop_version 3.35.91
 %define glib2_version 2.56.0
@@ -29,7 +27,7 @@ Patch01: 0001-build-Port-to-gcr4.patch
 %define gtk3_version 3.15.0
 %define gtk4_version 4.0.0
 %define adwaita_version 1.0.0
-%define mutter_version 43~alpha
+%define mutter_version 43~beta
 %define polkit_version 0.100
 %define gsettings_desktop_schemas_version 42~beta
 %define ibus_version 1.5.2
@@ -234,6 +232,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Wed Aug 10 2022 Florian Müllner <fmuellner@redhat.com> - 43~beta-1
+- Update to 43.beta
+
 * Thu Jul 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 43~alpha-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 
