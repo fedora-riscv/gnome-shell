@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        43~beta
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -23,7 +23,7 @@ Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 %define gnome_desktop_version 3.35.91
 %define glib2_version 2.56.0
 %define gobject_introspection_version 1.49.1
-%define gjs_version 1.71.1
+%define gjs_version 1.73.1
 %define gtk3_version 3.15.0
 %define gtk4_version 4.0.0
 %define adwaita_version 1.0.0
@@ -232,6 +232,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Thu Aug 11 2022 Kalev Lember <klember@redhat.com> - 43~beta-2
+- Bump minimum required gjs version
+
 * Wed Aug 10 2022 Florian Müllner <fmuellner@redhat.com> - 43~beta-1
 - Update to 43.beta
 
