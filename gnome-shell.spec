@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        43~beta
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -82,6 +82,7 @@ Requires:       gnome-desktop3%{?_isa} >= %{gnome_desktop_version}
 # Disabled on RHEL 7 to allow logging into KDE session by default
 Recommends:     gnome-session-xsession
 %endif
+Requires:       gcr%{?_isa}
 Requires:       gobject-introspection%{?_isa} >= %{gobject_introspection_version}
 Requires:       gjs%{?_isa} >= %{gjs_version}
 Requires:       gtk3%{?_isa} >= %{gtk3_version}
@@ -230,6 +231,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Fri Sep 02 2022 Kalev Lember <klember@redhat.com> - 43~beta-3
+- Add missing dep on gcr
+
 * Thu Aug 11 2022 Kalev Lember <klember@redhat.com> - 43~beta-2
 - Bump minimum required gjs version
 
