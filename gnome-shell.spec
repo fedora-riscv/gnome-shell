@@ -82,8 +82,6 @@ Requires:       gnome-desktop3%{?_isa} >= %{gnome_desktop_version}
 # Disabled on RHEL 7 to allow logging into KDE session by default
 Recommends:     gnome-session-xsession
 %endif
-# wrapper script uses to restart old GNOME session if run --replace
-# from the command line
 Requires:       gobject-introspection%{?_isa} >= %{gobject_introspection_version}
 Requires:       gjs%{?_isa} >= %{gjs_version}
 Requires:       gtk3%{?_isa} >= %{gtk3_version}
