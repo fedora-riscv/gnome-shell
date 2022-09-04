@@ -1,8 +1,8 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        43~beta
-Release:        3%{?dist}
+Version:        43~rc
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -27,11 +27,11 @@ Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 %define gtk3_version 3.15.0
 %define gtk4_version 4.0.0
 %define adwaita_version 1.0.0
-%define mutter_version 43~beta
+%define mutter_version 43~rc
 %define polkit_version 0.100
 %define gsettings_desktop_schemas_version 42~beta
 %define ibus_version 1.5.2
-%define gnome_bluetooth_version 1:3.9.0
+%define gnome_bluetooth_version 1:42.3
 %define gstreamer_version 1.4.5
 %define pipewire_version 0.3.0
 %define gnome_settings_daemon_version 3.37.1
@@ -231,6 +231,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Sun Sep 04 2022 Florian Müllner <fmuellner@redhat.com> - 43~rc-1
+- Update to 43.rc
+
 * Fri Sep 02 2022 Kalev Lember <klember@redhat.com> - 43~beta-3
 - Add missing dep on gcr
 
