@@ -1,0 +1,30 @@
+From 6866af94832d55ca79162a6ccafdd00fc897bf41 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Florian=20M=C3=BCllner?= <fmuellner@gnome.org>
+Date: Tue, 6 Sep 2022 16:37:25 +0200
+Subject: [PATCH] loginManager: Fix canRebootToBootLoaderMenu() result
+
+Since commit a3db9093834, the `result` variable holds the
+destructured result of the D-Bus call, not the results array
+as previously.
+---
+ js/misc/loginManager.js | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/js/misc/loginManager.js b/js/misc/loginManager.js
+index 6549fe5adc..94d62e8192 100644
+--- a/js/misc/loginManager.js
++++ b/js/misc/loginManager.js
+@@ -164,8 +164,8 @@ var LoginManagerSystemd = class extends Signals.EventEmitter {
+ 
+         try {
+             const [result] = await this._proxy.CanRebootToBootLoaderMenuAsync();
+-            needsAuth = result[0] === 'challenge';
+-            canRebootToBootLoaderMenu = needsAuth || result[0] === 'yes';
++            needsAuth = result === 'challenge';
++            canRebootToBootLoaderMenu = needsAuth || result === 'yes';
+         } catch (error) {
+             canRebootToBootLoaderMenu = false;
+             needsAuth = false;
+-- 
+GitLab
+
