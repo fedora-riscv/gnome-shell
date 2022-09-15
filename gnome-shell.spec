@@ -242,7 +242,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 
 %changelog
 * Thu Sep 15 2022 Kalev Lember <klember@redhat.com> - 43~rc-3
-- Backport a fix for initial setup session input sources sorting (#2124043)
+- Backport a fix for initial setup session input sources sorting (#2121110)
 
 * Tue Sep 06 2022 Kalev Lember <klember@redhat.com> - 43~rc-2
 - Backport upstream fix to fix boot options (#2124043)
