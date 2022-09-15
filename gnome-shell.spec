@@ -7,7 +7,7 @@ Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
 URL:            https://wiki.gnome.org/Projects/GnomeShell
-Source0:        https://download.gnome.org/sources/gnome-shell/42/%{name}-%{tarball_version}.tar.xz
+Source0:        https://download.gnome.org/sources/gnome-shell/43/%{name}-%{tarball_version}.tar.xz
 
 # Backported from upstream
 # https://bugzilla.redhat.com/show_bug.cgi?id=2124043
