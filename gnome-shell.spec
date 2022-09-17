@@ -1,23 +1,13 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        43~rc
-Release:        3%{?dist}
+Version:        43.0
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
 URL:            https://wiki.gnome.org/Projects/GnomeShell
 Source0:        https://download.gnome.org/sources/gnome-shell/43/%{name}-%{tarball_version}.tar.xz
-
-# Backported from upstream
-# https://bugzilla.redhat.com/show_bug.cgi?id=2124043
-# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/2472
-Patch0: 2472.patch
-
-# Backported from upstream
-# https://bugzilla.redhat.com/show_bug.cgi?id=2121110
-# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/2487
-Patch1: 2487.patch
 
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch10001: gnome-shell-favourite-apps-firefox.patch
@@ -241,6 +231,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Sat Sep 17 2022 Florian Müllner <fmuellner@redhat.com> - 43.0-1
+-  Update to 43.0
+
 * Thu Sep 15 2022 Kalev Lember <klember@redhat.com> - 43~rc-3
 - Backport a fix for initial setup session input sources sorting (#2121110)
 
