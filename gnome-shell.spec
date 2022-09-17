@@ -27,7 +27,7 @@ Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
 %define gtk3_version 3.15.0
 %define gtk4_version 4.0.0
 %define adwaita_version 1.0.0
-%define mutter_version 43~rc
+%define mutter_version 43.0
 %define polkit_version 0.100
 %define gsettings_desktop_schemas_version 42~beta
 %define ibus_version 1.5.2
