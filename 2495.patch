@@ -1,0 +1,68 @@
+From 79a45d691fb03279f501b33bfbefd933e94ec12d Mon Sep 17 00:00:00 2001
+From: Carlos Garnacho <carlosg@gnome.org>
+Date: Mon, 19 Sep 2022 22:35:15 +0200
+Subject: [PATCH] status: Ignore prior single-element lists updating input
+ sources MRU
+
+Consider the existing input sources MRU only valid if it contained
+more than one element to pick from. Fixes the following situation
+with initial-setup sessions:
+
+- Initial setup Session starts, with several input sources already
+  configured ("us" between them)
+- InputSourceManager initializes, only the default "us" keymap is
+  available
+- MRU list is constructed, "us" is picked
+- InputSourceManager catches up with session configuration, the
+  other extra sources are added
+- MRU list is reconstructed, "us" is already the most recent
+- Session ends up with "us" picked, regardless of its position in
+  the list, and no MRU existing prior to startup
+
+If we consider the intermediate single-element MRU list invalid,
+it is still possible to pick the best default source between all
+the configured ones (the one that was put first in the list,
+basically), after initialization is complete.
+
+But also, it is unnecessary to have if there is a single source to
+pick from. After the sources list has two elements of more, the
+MRU list will become effective and preserved during changes to
+the available sources.
+
+Closes: https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/5873
+---
+ js/ui/status/keyboard.js | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/js/ui/status/keyboard.js b/js/ui/status/keyboard.js
+index 65b3962731..82706c0389 100644
+--- a/js/ui/status/keyboard.js
++++ b/js/ui/status/keyboard.js
+@@ -524,15 +524,18 @@ var InputSourceManager = class extends Signals.EventEmitter {
+         }
+ 
+         let mruSources = [];
+-        for (let i = 0; i < this._mruSources.length; i++) {
+-            for (let j = 0; j < sourcesList.length; j++) {
+-                if (this._mruSources[i].type == sourcesList[j].type &&
+-                    this._mruSources[i].id == sourcesList[j].id) {
+-                    mruSources = mruSources.concat(sourcesList.splice(j, 1));
+-                    break;
++        if (this._mruSources.length > 1) {
++            for (let i = 0; i < this._mruSources.length; i++) {
++                for (let j = 0; j < sourcesList.length; j++) {
++                    if (this._mruSources[i].type === sourcesList[j].type &&
++                        this._mruSources[i].id === sourcesList[j].id) {
++                        mruSources = mruSources.concat(sourcesList.splice(j, 1));
++                        break;
++                    }
+                 }
+             }
+         }
++
+         this._mruSources = mruSources.concat(sourcesList);
+     }
+ 
+-- 
+GitLab
+
