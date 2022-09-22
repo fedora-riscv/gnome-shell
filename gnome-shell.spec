@@ -232,7 +232,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 
 %changelog
 * Sat Sep 17 2022 Florian Müllner <fmuellner@redhat.com> - 43.0-1
--  Update to 43.0
+- Update to 43.0
 
 * Thu Sep 15 2022 Kalev Lember <klember@redhat.com> - 43~rc-3
 - Backport a fix for initial setup session input sources sorting (#2121110)
