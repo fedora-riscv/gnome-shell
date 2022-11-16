@@ -1,0 +1,53 @@
+From d9e5c8a89900b30d2cf432c376613a3f68fc7012 Mon Sep 17 00:00:00 2001
+From: Carlos Garnacho <carlosg@gnome.org>
+Date: Fri, 11 Nov 2022 13:13:41 +0100
+Subject: [PATCH] status/keyboard: Ignore purpose hint changes while keymap
+ switcher is shown
+
+If we are getting purpose hint changes while the language switcher is popped
+up, this likely means the purpose hint was actually triggered by the key
+focus change induced by the language switcher popping up.
+
+In this case, we on one hand would like to preserve the state that applied
+before thise focus change, and on the other we very much want to avoid the
+keymap change that would forget about the keys being pressed.
+
+Closes: https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/6066
+---
+ js/ui/status/keyboard.js | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/js/ui/status/keyboard.js b/js/ui/status/keyboard.js
+index 82706c0389..c23529cb9e 100644
+--- a/js/ui/status/keyboard.js
++++ b/js/ui/status/keyboard.js
+@@ -411,9 +411,12 @@ var InputSourceManager = class extends Signals.EventEmitter {
+             return;
+         }
+ 
+-        let popup = new InputSourcePopup(this._mruSources, this._keybindingAction, this._keybindingActionBackward);
+-        if (!popup.show(binding.is_reversed(), binding.get_name(), binding.get_mask()))
+-            popup.fadeAndDestroy();
++        this._switcherPopup = new InputSourcePopup(
++            this._mruSources, this._keybindingAction, this._keybindingActionBackward);
++        this._switcherPopup.connect('destroy', () => this._switcherPopup = null);
++        if (!this._switcherPopup.show(
++            binding.is_reversed(), binding.get_name(), binding.get_mask()))
++            this._switcherPopup.fadeAndDestroy();
+     }
+ 
+     _keyboardOptionsChanged() {
+@@ -675,6 +678,10 @@ var InputSourceManager = class extends Signals.EventEmitter {
+     }
+ 
+     _ibusSetContentType(im, purpose, _hints) {
++        // Avoid purpose changes while the switcher popup is shown, likely due to
++        // the focus change caused by the switcher popup causing this purpose change.
++        if (this._switcherPopup)
++            return;
+         if (purpose == IBus.InputPurpose.PASSWORD) {
+             if (Object.keys(this._inputSources).length == Object.keys(this._ibusSources).length)
+                 return;
+-- 
+GitLab
+
