@@ -1,0 +1,31 @@
+From b0befbbfbbe4a335f6c184049743202e91fcdfe8 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Florian=20M=C3=BCllner?= <fmuellner@gnome.org>
+Date: Fri, 18 Nov 2022 22:40:31 +0100
+Subject: [PATCH] inhibitShorcutsDialog: Fix permission check
+
+Each permission entry is an array of strings, so checking that against
+the expected string itself will always fail.
+
+https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/6107
+
+Part-of: <https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/2548>
+---
+ js/ui/inhibitShortcutsDialog.js | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/js/ui/inhibitShortcutsDialog.js b/js/ui/inhibitShortcutsDialog.js
+index b6f1330b2..7c3d15996 100644
+--- a/js/ui/inhibitShortcutsDialog.js
++++ b/js/ui/inhibitShortcutsDialog.js
+@@ -143,7 +143,7 @@ var InhibitShortcutsDialog = GObject.registerClass({
+ 
+                 if (permissions[appId] === undefined) // Not found
+                     this._dialog.open();
+-                else if (permissions[appId] === GRANTED)
++                else if (permissions[appId][0] === GRANTED)
+                     this._emitResponse(DialogResponse.ALLOW);
+                 else
+                     this._emitResponse(DialogResponse.DENY);
+-- 
+2.37.3
+
