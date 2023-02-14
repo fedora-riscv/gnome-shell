@@ -1,8 +1,8 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        43.2
-Release:        2%{?dist}
+Version:        43.3
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -18,9 +18,6 @@ Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 
 # Work around crashy tear down
 Patch60003: 0001-main-Leak-the-GJS-context-and-ShellGlobal.patch
-
-# Backports that will be part of 43.3
-Patch70000: post-43.2-backports.patch
 
 %define eds_version 3.45.1
 %define gnome_desktop_version 3.35.91
@@ -234,6 +231,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Tue Feb 14 2023 Florian Müllner <fmuellner@redhat.com> - 43.3-1
+- Update to 43.3
+
 * Wed Feb 01 2023 Jonas Ådahl <jadahl@redhat.com> - 43.2-2
 - Backport patches on the gnome-43 branch
 
