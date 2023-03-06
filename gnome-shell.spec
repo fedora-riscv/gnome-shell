@@ -1,8 +1,8 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        44~beta
-Release:        3%{?dist}
+Version:        44~rc
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -12,22 +12,19 @@ Source0:        https://download.gnome.org/sources/gnome-shell/44/%{name}-%{tarb
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch10001: gnome-shell-favourite-apps-firefox.patch
 
-# https://bugzilla.redhat.com/show_bug.cgi?id=2174753
-Patch20001: 0001-endSessionDialog-Don-t-emit-closed-until-handler-is-.patch
-
 # Some users might have a broken PAM config, so we really need this
 # downstream patch to stop trying on configuration errors.
 Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 
 %define eds_version 3.45.1
-%define gnome_desktop_version 3.35.91
+%define gnome_desktop_version 40
 %define glib2_version 2.56.0
 %define gobject_introspection_version 1.49.1
 %define gjs_version 1.73.1
 %define gtk3_version 3.15.0
 %define gtk4_version 4.0.0
 %define adwaita_version 1.0.0
-%define mutter_version 44~beta
+%define mutter_version 44~rc
 %define polkit_version 0.100
 %define gsettings_desktop_schemas_version 42~beta
 %define ibus_version 1.5.2
@@ -47,7 +44,7 @@ BuildRequires:  pkgconfig(gcr-4)
 BuildRequires:  pkgconfig(gjs-1.0) >= %{gjs_version}
 BuildRequires:  pkgconfig(gio-2.0) >= %{glib2_version}
 BuildRequires:  pkgconfig(gnome-autoar-0)
-BuildRequires:  pkgconfig(gnome-desktop-3.0)
+BuildRequires:  pkgconfig(gnome-desktop-4)
 BuildRequires:  pkgconfig(gobject-introspection-1.0) >= %{gobject_introspection_version}
 BuildRequires:  mesa-libGL-devel
 BuildRequires:  mesa-libEGL-devel
@@ -94,7 +91,7 @@ Requires:       librsvg2%{?_isa}
 Requires:       mutter%{?_isa} >= %{mutter_version}
 Requires:       upower%{?_isa}
 Requires:       polkit%{?_isa} >= %{polkit_version}
-Requires:       gnome-desktop3%{?_isa} >= %{gnome_desktop_version}
+Requires:       gnome-desktop4%{?_isa} >= %{gnome_desktop_version}
 Requires:       glib2%{?_isa} >= %{glib2_version}
 Requires:       gsettings-desktop-schemas%{?_isa} >= %{gsettings_desktop_schemas_version}
 Requires:       gnome-settings-daemon%{?_isa} >= %{gnome_settings_daemon_version}
@@ -229,6 +226,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/org.gnome.Shell.Porta
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Mon Mar 06 2023 Florian Müllner <fmuellner@redhat.com> - 44~rc-1
+- Update to 44.rc
+
 * Sun Mar 05 2023 Ray Strode <rstrode@redhat.com> - 44~beta-3
 - Fix slowdown in at shutdown
   Resolves: #2174753
