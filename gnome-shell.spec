@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        44~beta
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -11,6 +11,9 @@ Source0:        https://download.gnome.org/sources/gnome-shell/44/%{name}-%{tarb
 
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch10001: gnome-shell-favourite-apps-firefox.patch
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=2174753
+Patch20001: 0001-endSessionDialog-Don-t-emit-closed-until-handler-is-.patch
 
 # Some users might have a broken PAM config, so we really need this
 # downstream patch to stop trying on configuration errors.
@@ -227,6 +230,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/org.gnome.Shell.Porta
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Sun Mar 05 2023 Ray Strode <rstrode@redhat.com> - 44~beta-3
+- Fix slowdown in at shutdown
+  Resolves: #2174753
+
 * Mon Feb 20 2023 Adam Williamson <awilliam@redhat.com> - 44~beta-2
 - Rebuild without changes for Bodhi reasons
 
