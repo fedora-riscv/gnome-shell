@@ -1,7 +1,7 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        43.3
+Version:        43.4
 Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
@@ -231,6 +231,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/evolution-calendar.de
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Sun Mar 19 2023 Florian Müllner <fmuellner@redhat.com> - 43.4-1
+- Update to 43.4
+
 * Tue Feb 14 2023 Florian Müllner <fmuellner@redhat.com> - 43.3-1
 - Update to 43.3
 
