@@ -1,8 +1,8 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        44~rc
-Release:        2%{?dist}
+Version:        44.0
+Release:        1%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -24,7 +24,7 @@ Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
 %define gtk3_version 3.15.0
 %define gtk4_version 4.0.0
 %define adwaita_version 1.0.0
-%define mutter_version 44~rc
+%define mutter_version 44.0
 %define polkit_version 0.100
 %define gsettings_desktop_schemas_version 42~beta
 %define ibus_version 1.5.2
@@ -226,6 +226,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/org.gnome.Shell.Porta
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Sun Mar 19 2023 Florian Müllner <fmuellner@redhat.com> - 44.0-1
+- Update to 44.0
+
 * Tue Mar 14 2023 Dominik Mierzejewski <dominik@greysector.net> - 44~rc-2
 - Recommend gnome-bluetooth instead of requiring it
   Resolves rhbz#2172653
