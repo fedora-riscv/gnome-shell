@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        44.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -15,6 +15,8 @@ Patch10001: gnome-shell-favourite-apps-firefox.patch
 # Some users might have a broken PAM config, so we really need this
 # downstream patch to stop trying on configuration errors.
 Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
+
+Patch40002: fix-timed-logout.patch
 
 %define eds_version 3.45.1
 %define gnome_desktop_version 40
@@ -226,6 +228,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/org.gnome.Shell.Porta
 %{_mandir}/man1/gnome-shell.1*
 
 %changelog
+* Sun Mar 19 2023 Florian Müllner <fmuellner@redhat.com> - 44.0-2
+- Fix timed logout
+  Resolves: #2177853
+
 * Sun Mar 19 2023 Florian Müllner <fmuellner@redhat.com> - 44.0-1
 - Update to 44.0
 
