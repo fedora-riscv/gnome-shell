@@ -1,7 +1,7 @@
 %global tarball_version %%(echo %{version} | tr '~' '.')
 
 Name:           gnome-shell
-Version:        44.0
+Version:        44.1
 Release:        %autorelease
 Summary:        Window management and application launching for GNOME
 
@@ -9,22 +9,12 @@ License:        GPLv2+
 URL:            https://wiki.gnome.org/Projects/GnomeShell
 Source0:        https://download.gnome.org/sources/gnome-shell/44/%{name}-%{tarball_version}.tar.xz
 
-# https://gitlab.gnome.org/GNOME/gnome-shell/-/commit/58af42caeaf8ef51f62aa22880c04638f21d5e06
-# https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/6539
-# Fix a typo that broke screenshot notifications
-Patch0: 0001-screenshot-Fix-code-typo.patch
-# Fix a wrong call to GLib.Error.matches that also breaks them
-# https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/2725
-Patch1: 0001-screenshot-fix-broken-GLib.Error.matches-call.patch
-
 # Replace Epiphany with Firefox in the default favourite apps list
 Patch10001: gnome-shell-favourite-apps-firefox.patch
 
 # Some users might have a broken PAM config, so we really need this
 # downstream patch to stop trying on configuration errors.
 Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
-
-Patch40002: fix-timed-logout.patch
 
 %define eds_version 3.45.1
 %define gnome_desktop_version 40
