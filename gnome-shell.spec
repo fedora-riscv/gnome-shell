@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        44.1
-Release:        %autorelease
+Release:        %autorelease -e rvhotfix0
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -15,6 +15,11 @@ Patch10001: gnome-shell-favourite-apps-firefox.patch
 # Some users might have a broken PAM config, so we really need this
 # downstream patch to stop trying on configuration errors.
 Patch40001: 0001-gdm-Work-around-failing-fingerprint-auth.patch
+
+# Fix crash on riscv64 and mips
+# https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/6528
+# https://gitlab.gnome.org/GNOME/gnome-shell/-/commit/667ff703864e4c427234444bbb98d6ed82c1c4e5
+Patch60001: 667ff703864e4c427234444bbb98d6ed82c1c4e5.patch
 
 %define eds_version 3.45.1
 %define gnome_desktop_version 40

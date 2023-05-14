@@ -1,0 +1,78 @@
+From 667ff703864e4c427234444bbb98d6ed82c1c4e5 Mon Sep 17 00:00:00 2001
+From: Daniel van Vugt <daniel.van.vugt@canonical.com>
+Date: Thu, 23 Mar 2023 17:51:46 +0800
+Subject: [PATCH] main: Correct the pointer value of strtab on riscv/mips
+ architectures
+
+Glibc defines `d_ptr`/`d_val` to be a relocated address on most
+architectures, except for riscv and mips where it is just an offset from
+the binary load address. So we need to convert `strtab` from an offset
+into a pointer for riscv and mips.
+
+Internally within glibc there is the `D_PTR` macro for doing this, which
+relies on private data hidden in an ABI-unstable part of `link_map`. So
+we can't use the same conditional logic as glibc does internally.
+
+Our solution is to detect when `strtab` is unreasonably low (below the
+address of our binary) and so it must be an unrelocated offset. In that
+case we just do the relocation manually.
+
+Fixes: https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/6528
+---
+ src/main.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/src/main.c b/src/main.c
+index e81f92c44d..d17843b0a3 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -1,5 +1,7 @@
+ /* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
+ 
++#define _GNU_SOURCE
++
+ #include "config.h"
+ 
+ #if defined (HAVE_MALLINFO) || defined (HAVE_MALLINFO2)
+@@ -20,6 +22,7 @@
+ #include <link.h>
+ 
+ #ifdef HAVE_EXE_INTROSPECTION
++#include <dlfcn.h>
+ #include <elf.h>
+ #endif
+ 
+@@ -139,6 +142,8 @@ maybe_add_rpath_introspection_paths (void)
+   g_auto (GStrv) paths = NULL;
+   g_autofree char *exe_dir = NULL;
+   GStrv str;
++  Dl_info dl_info;
++  struct link_map *link_map = NULL;
+ 
+   for (dyn = _DYNAMIC; dyn->d_tag != DT_NULL; dyn++)
+     {
+@@ -153,6 +158,21 @@ maybe_add_rpath_introspection_paths (void)
+   if ((!rpath && !runpath) || !strtab)
+     return;
+ 
++  if (dladdr1 (_DYNAMIC, &dl_info, (void **) &link_map, RTLD_DL_LINKMAP))
++    {
++      /* Sanity check */
++      g_return_if_fail ((void *) _DYNAMIC == (void *) link_map->l_ld);
++
++      /* strtab should be at an offset above our load address. If it's not
++       * then this is a special architecture (riscv, mips) that has a
++       * readonly _DYNAMIC section that's not relocated. So in that case
++       * strtab is currently an offset rather than an address. Let's make it
++       * an address...
++       */
++      if (strtab < (const char *) link_map->l_addr)
++        strtab += link_map->l_addr;
++    }
++
+   if (rpath)
+     paths = g_strsplit (strtab + rpath->d_un.d_val, ":", -1);
+   else
+-- 
+GitLab
+
